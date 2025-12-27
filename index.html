@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -46,7 +47,7 @@
         /* Header */
         .header {
             background: var(--surface);
-            padding: 12px 16px;
+            padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -61,7 +62,7 @@
 
         .header-buttons {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .header-btn {
@@ -90,11 +91,13 @@
         /* Main Content */
         .main-content {
             flex: 1;
-            padding: 16px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             max-width: 400px;
+            width: 100%;
             margin: 0 auto;
+            gap: 10px;
         }
 
         /* Image Preview/Upload */
@@ -105,7 +108,6 @@
             overflow: hidden;
             position: relative;
             border: 1px solid var(--surface-light);
-            margin-bottom: 20px;
             cursor: pointer;
         }
 
@@ -160,7 +162,6 @@
             background: var(--surface);
             border-radius: 12px;
             padding: 16px;
-            margin-bottom: 16px;
             border: 1px solid var(--surface-light);
         }
 
@@ -171,6 +172,10 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .section-title span {
+            width: 100%;
         }
 
         .section-title i {
@@ -204,7 +209,7 @@
         }
 
         .grid-option {
-            padding: 12px 0;
+            padding: 7px 0;
             background: var(--surface-light);
             border-radius: 8px;
             text-align: center;
@@ -227,7 +232,7 @@
         }
 
         .size-option {
-            padding: 12px 8px;
+            padding: 8px;
             background: var(--surface-light);
             border-radius: 8px;
             text-align: center;
@@ -241,8 +246,7 @@
         }
 
         .size-icon {
-            font-size: 18px;
-            margin-bottom: 4px;
+            font-size: 14px;
         }
 
         .size-name {
@@ -252,14 +256,14 @@
 
         /* Background */
         .background-options {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            display: flex;
+            flex-direction: row;
             gap: 8px;
-            margin-bottom: 12px;
         }
 
         .background-option {
-            padding: 12px 8px;
+            padding: 8px;
+            width: 100%;
             background: var(--surface-light);
             border-radius: 8px;
             text-align: center;
@@ -276,10 +280,12 @@
         }
 
         .bg-icon {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             border-radius: 6px;
-            margin: 0 auto 4px;
+            margin: 0 auto 2px;
+            font-size: 0.8rem;
+            line-height: 1;
         }
 
         .transparent {
@@ -304,28 +310,49 @@
             font-weight: 600;
         }
 
-        .color-picker {
+        /* Custom Color Picker */
+        .custom-color-picker {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 12px;
-            background: var(--surface-light);
-            border-radius: 8px;
-            margin-top: 8px;
+            height: 22px;
+            max-height: 22px;
         }
 
-        .color-picker input {
-            flex: 1;
-            height: 32px;
-            border: none;
+        .color-preview {
+            width: 22px;
+            height: 22px;
             border-radius: 6px;
+            border: 1px solid var(--surface-light);
             cursor: pointer;
-            background: transparent;
+            background: var(--current-color, #3b82f6);
         }
 
-        .color-label {
-            font-size: 14px;
-            font-weight: 500;
+        .color-picker-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        .color-picker-btn:hover {
+            background: var(--surface-light);
+        }
+
+        .color-picker-btn:active {
+            transform: scale(0.95);
+        }
+
+        .hidden-color-input {
+            display: none;
         }
 
         /* Download Button */
@@ -351,7 +378,8 @@
             justify-content: center;
             gap: 10px;
             transition: all 0.2s;
-            margin: 20px;
+            margin: 10px;
+            margin-top: 0;
         }
 
         .download-btn:active {
@@ -427,11 +455,14 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Responsive */
         @media (max-width: 340px) {
+
             .background-options,
             .size-options {
                 grid-template-columns: repeat(2, 1fr);
@@ -439,6 +470,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="loader" id="loader">
         <div class="spinner"></div>
@@ -457,7 +489,7 @@
                 </button>
             </div>
         </header>
-        
+
         <input type="file" id="imageInput" accept="image/*">
 
         <!-- Main Content -->
@@ -471,14 +503,14 @@
                     <p>Нажмите или перетащите изображение</p>
                 </div>
             </div>
-            
+
             <!-- Grid Control -->
             <div class="control-section">
                 <div class="section-title">
                     <i class="fas fa-th"></i>
-                    <span>Количество квадратов</span>
+                    <span>Количество изображений</span>
                 </div>
-                
+
                 <div class="grid-container">
                     <div class="grid-row">
                         <div class="grid-option active" data-value="2">2</div>
@@ -495,14 +527,14 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Size Mode -->
             <div class="control-section">
                 <div class="section-title">
                     <i class="fas fa-expand-alt"></i>
                     <span>Размер изображения</span>
                 </div>
-                
+
                 <div class="size-options">
                     <div class="size-option active" data-mode="fit">
                         <div class="size-icon"><i class="fas fa-arrows-alt-h"></i></div>
@@ -518,37 +550,34 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Background -->
             <div class="control-section">
                 <div class="section-title">
                     <i class="fas fa-palette"></i>
-                    <span>Цвет фона </span>
+                    <span> Цвет фона</span>
+                    <div class="custom-color-picker" id="customColorPicker">
+                        <div class="color-preview" id="colorPreview"></div>
+                        <button class="color-picker-btn" id="colorPickerBtn" title="Выбрать цвет">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
                 </div>
-                
+
                 <div class="background-options">
                     <div class="background-option active" data-bg="transparent">
                         <div class="bg-icon transparent"></div>
                         <div class="bg-name">Прозрачный</div>
                     </div>
-                    <div class="background-option" data-bg="white">
-                        <div class="bg-icon white"></div>
-                        <div class="bg-name">Белый</div>
-                    </div>
-                    <div class="background-option" data-bg="black">
-                        <div class="bg-icon black"></div>
-                        <div class="bg-name">Чёрный</div>
-                    </div>
                     <div class="background-option" data-bg="custom">
-                        <div class="bg-icon custom"><i class="fas fa-palette" style="color: white; line-height: 24px;"></i></div>
+                        <div class="bg-icon custom"><i class="fas fa-palette"
+                                style="color: white; line-height: 24px;"></i></div>
                         <div class="bg-name">Свой цвет</div>
                     </div>
                 </div>
                 
-                <div class="color-picker" id="bgColorPickerContainer">
-                    <div class="color-label">Цвет:</div>
-                    <input type="color" id="backgroundColorPicker" value="#3b82f6">
-                </div>
+                <!-- Hidden color input -->
+                <input type="color" id="backgroundColorPicker" class="hidden-color-input" value="#3b82f6">
             </div>
         </main>
 
@@ -569,7 +598,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    
+
     <script>
         // DOM Elements
         const imageInput = document.getElementById('imageInput');
@@ -586,7 +615,9 @@
         const gridOptions = document.querySelectorAll('.grid-option');
         const sizeOptions = document.querySelectorAll('.size-option');
         const backgroundOptions = document.querySelectorAll('.background-option');
-        const bgColorPickerContainer = document.getElementById('bgColorPickerContainer');
+        const customColorPicker = document.getElementById('customColorPicker');
+        const colorPreview = document.getElementById('colorPreview');
+        const colorPickerBtn = document.getElementById('colorPickerBtn');
         const backgroundColorPicker = document.getElementById('backgroundColorPicker');
 
         // State
@@ -601,6 +632,7 @@
         function init() {
             setupEventListeners();
             updateAspectRatio();
+            updateColorPreview();
             updateUI();
         }
 
@@ -612,56 +644,66 @@
             previewContainer.addEventListener('dragover', handleDragOver);
             previewContainer.addEventListener('dragleave', handleDragLeave);
             previewContainer.addEventListener('drop', handleDrop);
-            
+
             imageInput.addEventListener('change', handleImageUpload);
-            
+
             // Grid options
             gridOptions.forEach(option => {
                 option.addEventListener('click', () => {
                     gridCount = parseInt(option.dataset.value);
                     updateGridOptions();
                     updateAspectRatio();
-                    
+
                     if (originalImage) {
                         updateImageDisplay();
                         if (isGridVisible) drawGrid();
                     }
                 });
             });
-            
+
             // Size options
             sizeOptions.forEach(option => {
                 option.addEventListener('click', () => {
                     setImageSizeMode(option.dataset.mode);
                 });
             });
-            
+
             // Background options
             backgroundOptions.forEach(option => {
                 option.addEventListener('click', () => {
                     setBackgroundColor(option.dataset.bg);
                 });
             });
+
+            // Custom color picker
+            colorPreview.addEventListener('click', () => backgroundColorPicker.click());
+            colorPickerBtn.addEventListener('click', () => backgroundColorPicker.click());
             
-            // Color picker
+            // Color picker input
             backgroundColorPicker.addEventListener('input', (e) => {
                 customColor = e.target.value;
+                updateColorPreview();
+                
                 if (backgroundColor === 'custom') {
                     updatePreviewBackground();
                     if (originalImage && isGridVisible) drawGrid();
                 }
             });
-            
+
             // Actions
             toggleGridBtn.addEventListener('click', toggleGridVisibility);
             splitAndDownloadBtn.addEventListener('click', splitAndDownload);
-            
+
             // Window resize
             window.addEventListener('resize', handleResize);
-            
+
             // Prevent default drag and drop
             document.addEventListener('dragover', (e) => e.preventDefault());
             document.addEventListener('drop', (e) => e.preventDefault());
+        }
+
+        function updateColorPreview() {
+            colorPreview.style.setProperty('--current-color', customColor);
         }
 
         function handleDragOver(e) {
@@ -679,9 +721,9 @@
         function handleDrop(e) {
             e.preventDefault();
             e.stopPropagation();
-            
+
             uploadPlaceholder.classList.remove('drag-over');
-            
+
             const files = e.dataTransfer.files;
             if (files.length > 0 && files[0].type.startsWith('image/')) {
                 imageInput.files = files;
@@ -702,11 +744,11 @@
 
         function setImageSizeMode(mode) {
             imageSizeMode = mode;
-            
+
             sizeOptions.forEach(option => {
                 option.classList.toggle('active', option.dataset.mode === mode);
             });
-            
+
             if (originalImage) {
                 updatePreviewImageStyle();
                 updateImageDisplay();
@@ -716,17 +758,17 @@
 
         function setBackgroundColor(color) {
             backgroundColor = color;
-            
+
             backgroundOptions.forEach(option => {
                 option.classList.toggle('active', option.dataset.bg === color);
             });
-            
+
             if (color === 'custom') {
-                bgColorPickerContainer.style.display = 'flex';
+                customColorPicker.style.display = 'flex';
             } else {
-                bgColorPickerContainer.style.display = 'none';
+                customColorPicker.style.display = 'none';
             }
-            
+
             if (originalImage) {
                 updatePreviewBackground();
                 updateImageDisplay();
@@ -737,44 +779,44 @@
         async function handleImageUpload() {
             const file = imageInput.files[0];
             if (!file) return;
-            
+
             if (!file.type.startsWith('image/')) {
                 showNotification('Выберите файл изображения', 'error');
                 return;
             }
-            
+
             if (file.size > 10 * 1024 * 1024) {
                 showNotification('Файл должен быть меньше 10MB', 'error');
                 return;
             }
-            
+
             showLoader();
-            
+
             try {
                 const imageData = await readFileAsDataURL(file);
                 originalImage = new Image();
-                
+
                 originalImage.onload = () => {
                     previewImage.src = imageData;
                     previewImage.style.display = 'block';
                     uploadPlaceholder.style.display = 'none';
                     splitAndDownloadBtn.disabled = false;
-                    
+
                     updatePreviewImageStyle();
                     updatePreviewBackground();
                     updateImageDisplay();
-                    
+
                     if (isGridVisible) drawGrid();
-                    
+
                     hideLoader();
                     showNotification('Изображение загружено');
                 };
-                
+
                 originalImage.onerror = () => {
                     hideLoader();
                     showNotification('Ошибка загрузки изображения', 'error');
                 };
-                
+
                 originalImage.src = imageData;
             } catch (error) {
                 hideLoader();
@@ -793,8 +835,8 @@
 
         function updatePreviewImageStyle() {
             if (!originalImage) return;
-            
-            switch(imageSizeMode) {
+
+            switch (imageSizeMode) {
                 case 'fit':
                     previewImage.style.objectFit = 'contain';
                     break;
@@ -813,7 +855,7 @@
         }
 
         function getBackgroundColor(forPreview = false) {
-            switch(backgroundColor) {
+            switch (backgroundColor) {
                 case 'transparent': return forPreview ? 'transparent' : null;
                 case 'white': return '#ffffff';
                 case 'black': return '#000000';
@@ -824,13 +866,13 @@
 
         function updateImageDisplay() {
             if (!originalImage) return;
-            
+
             const width = previewContainer.clientWidth;
             const height = previewContainer.clientHeight;
-            
+
             gridOverlay.width = width;
             gridOverlay.height = height;
-            
+
             if (isGridVisible) drawGrid();
         }
 
@@ -843,19 +885,19 @@
 
         function drawGrid() {
             if (!originalImage) return;
-            
+
             const ctx = gridOverlay.getContext('2d');
             const width = gridOverlay.width;
             const height = gridOverlay.height;
-            
+
             ctx.clearRect(0, 0, width, height);
-            
+
             const squareSize = width / gridCount;
-            
+
             // Draw grid lines
             ctx.strokeStyle = 'rgba(59, 130, 246, 0.7)';
             ctx.lineWidth = 2;
-            
+
             // Vertical lines
             for (let i = 1; i < gridCount; i++) {
                 const x = i * squareSize;
@@ -864,24 +906,24 @@
                 ctx.lineTo(x, height);
                 ctx.stroke();
             }
-            
+
             // Horizontal lines
             ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.lineTo(width, 0);
             ctx.stroke();
-            
+
             ctx.beginPath();
             ctx.moveTo(0, height);
             ctx.lineTo(width, height);
             ctx.stroke();
-            
+
             // Add numbers
             ctx.fillStyle = 'rgba(59, 130, 246, 0.9)';
             ctx.font = 'bold 16px sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            
+
             for (let i = 0; i < gridCount; i++) {
                 const x = i * squareSize + squareSize / 2;
                 const y = height / 2;
@@ -891,7 +933,7 @@
 
         function toggleGridVisibility() {
             isGridVisible = !isGridVisible;
-            
+
             if (isGridVisible) {
                 gridOverlay.style.display = 'block';
                 toggleGridBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
@@ -909,47 +951,47 @@
                 showNotification('Сначала загрузите изображение', 'error');
                 return;
             }
-            
+
             showLoader();
             showNotification('Создание квадратов...');
-            
+
             try {
                 const squareSize = 1024;
                 const totalWidth = squareSize * gridCount;
                 const totalHeight = squareSize;
-                
+
                 // Create main canvas
                 const mainCanvas = document.createElement('canvas');
                 mainCanvas.width = totalWidth;
                 mainCanvas.height = totalHeight;
                 const mainCtx = mainCanvas.getContext('2d');
-                
+
                 // Fill background
                 const bgColor = getBackgroundColor();
                 if (bgColor) {
                     mainCtx.fillStyle = bgColor;
                     mainCtx.fillRect(0, 0, totalWidth, totalHeight);
                 }
-                
+
                 // Calculate image dimensions
                 let drawWidth, drawHeight, drawX, drawY;
                 const imgRatio = originalImage.width / originalImage.height;
-                
-                switch(imageSizeMode) {
+
+                switch (imageSizeMode) {
                     case 'fit':
                         drawWidth = totalWidth;
                         drawHeight = drawWidth / imgRatio;
                         drawX = 0;
                         drawY = (totalHeight - drawHeight) / 2;
                         break;
-                        
+
                     case 'fill':
                         drawHeight = totalHeight;
                         drawWidth = drawHeight * imgRatio;
                         drawX = (totalWidth - drawWidth) / 2;
                         drawY = 0;
                         break;
-                        
+
                     case 'stretch':
                         drawWidth = totalWidth;
                         drawHeight = totalHeight;
@@ -957,27 +999,27 @@
                         drawY = 0;
                         break;
                 }
-                
+
                 // Draw image with high quality
                 mainCtx.imageSmoothingEnabled = true;
                 mainCtx.imageSmoothingQuality = 'high';
                 mainCtx.drawImage(originalImage, drawX, drawY, drawWidth, drawHeight);
-                
+
                 // Create zip file
                 const zip = new JSZip();
-                
+
                 for (let i = 0; i < gridCount; i++) {
                     const squareCanvas = document.createElement('canvas');
                     squareCanvas.width = squareSize;
                     squareCanvas.height = squareSize;
                     const squareCtx = squareCanvas.getContext('2d');
-                    
+
                     // Fill background
                     if (bgColor) {
                         squareCtx.fillStyle = bgColor;
                         squareCtx.fillRect(0, 0, squareSize, squareSize);
                     }
-                    
+
                     // Draw square from main canvas
                     const sourceX = i * squareSize;
                     squareCtx.imageSmoothingEnabled = true;
@@ -987,19 +1029,19 @@
                         sourceX, 0, squareSize, squareSize,
                         0, 0, squareSize, squareSize
                     );
-                    
+
                     // Add to zip
                     const blob = await canvasToBlob(squareCanvas);
                     zip.file(`square-${i + 1}.png`, blob);
                 }
-                
+
                 // Generate and download zip
-                const content = await zip.generateAsync({type: "blob"});
+                const content = await zip.generateAsync({ type: "blob" });
                 saveAs(content, `grid-${gridCount}-squares.zip`);
-                
+
                 hideLoader();
                 showNotification(`Скачано ${gridCount} квадратов`);
-                
+
             } catch (error) {
                 console.error('Error creating squares:', error);
                 hideLoader();
@@ -1018,7 +1060,7 @@
             uploadPlaceholder.style.display = 'flex';
             splitAndDownloadBtn.disabled = true;
             gridOverlay.style.display = 'block';
-            bgColorPickerContainer.style.display = 'none';
+            customColorPicker.style.display = 'none';
         }
 
         function showNotification(message, type = 'success') {
@@ -1026,14 +1068,14 @@
             notification.className = 'notification';
             notification.classList.add(type);
             notification.classList.add('show');
-            
+
             const icon = notification.querySelector('i');
             if (type === 'success') {
                 icon.className = 'fas fa-check-circle';
             } else {
                 icon.className = 'fas fa-exclamation-circle';
             }
-            
+
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
@@ -1051,4 +1093,5 @@
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
+
 </html>
