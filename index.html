@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grid Splitter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.4;
+            padding: 0;
+            height: 100dvh;
+
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--surface-light);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-btn {
+            background: var(--surface-light);
+            border: none;
+            color: var(--text);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover {
+            background: var(--primary);
+        }
+
+        .header-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Image Preview/Upload */
+        .image-upload {
+            width: 100%;
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--surface-light);
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        #previewImage {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .upload-placeholder {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .upload-placeholder i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .upload-placeholder p {
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .upload-placeholder.drag-over {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px dashed var(--primary);
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        /* Controls */
+        .control-section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--surface-light);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        /* Grid Control */
+        .grid-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .grid-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .grid-row:first-child .grid-option {
+            flex: 1;
+            margin: 0 4px;
+        }
+
+        .grid-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .grid-row:last-child .grid-option {
+            flex: 1;
+            margin: 0 4px;
+        }
+
+        .grid-option {
+            padding: 12px 0;
+            background: var(--surface-light);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .grid-option.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Size Mode */
+        .size-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .size-option {
+            padding: 12px 8px;
+            background: var(--surface-light);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .size-option.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .size-icon {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .size-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Background */
+        .background-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .background-option {
+            padding: 12px 8px;
+            background: var(--surface-light);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            transition: all 0.2s;
+        }
+
+        .background-option.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .bg-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            margin: 0 auto 4px;
+        }
+
+        .transparent {
+            background: repeating-conic-gradient(#475569 0% 25%, transparent 0% 50%) 50%/10px 10px;
+        }
+
+        .white {
+            background: white;
+            border: 1px solid #e2e8f0;
+        }
+
+        .black {
+            background: black;
+        }
+
+        .custom {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+        }
+
+        .bg-name {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: var(--surface-light);
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        .color-picker input {
+            flex: 1;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .color-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Download Button */
+        .download-section {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .download-btn {
+            width: 100%;
+            max-width: 400px;
+            padding: 18px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+            margin: 20px;
+        }
+
+        .download-btn:active {
+            transform: scale(0.98);
+            background: var(--primary-dark);
+        }
+
+        .download-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--surface);
+            color: var(--text);
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s;
+            border: 1px solid var(--surface-light);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 90%;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--error);
+        }
+
+        /* Loader */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--surface-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 340px) {
+            .background-options,
+            .size-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">Grid Splitter</div>
+            <div class="header-buttons">
+                <button class="header-btn" id="uploadBtn" title="Загрузить изображение">
+                    <i class="fas fa-upload"></i>
+                </button>
+                <button class="header-btn" id="toggleGridBtn" title="Скрыть сетку">
+                    <i class="fas fa-eye-slash"></i>
+                </button>
+            </div>
+        </header>
+        
+        <input type="file" id="imageInput" accept="image/*">
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Image Preview/Upload Area -->
+            <div class="image-upload" id="previewContainer">
+                <img id="previewImage" src="" alt="Предпросмотр">
+                <canvas id="gridOverlay" class="grid-overlay"></canvas>
+                <div class="upload-placeholder" id="uploadPlaceholder">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Нажмите или перетащите изображение</p>
+                </div>
+            </div>
+            
+            <!-- Grid Control -->
+            <div class="control-section">
+                <div class="section-title">
+                    <i class="fas fa-th"></i>
+                    <span>Количество квадратов</span>
+                </div>
+                
+                <div class="grid-container">
+                    <div class="grid-row">
+                        <div class="grid-option active" data-value="2">2</div>
+                        <div class="grid-option" data-value="3">3</div>
+                        <div class="grid-option" data-value="4">4</div>
+                        <div class="grid-option" data-value="5">5</div>
+                        <div class="grid-option" data-value="6">6</div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-option" data-value="7">7</div>
+                        <div class="grid-option" data-value="8">8</div>
+                        <div class="grid-option" data-value="9">9</div>
+                        <div class="grid-option" data-value="10">10</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Size Mode -->
+            <div class="control-section">
+                <div class="section-title">
+                    <i class="fas fa-expand-alt"></i>
+                    <span>Размер изображения</span>
+                </div>
+                
+                <div class="size-options">
+                    <div class="size-option active" data-mode="fit">
+                        <div class="size-icon"><i class="fas fa-arrows-alt-h"></i></div>
+                        <div class="size-name">По ширине</div>
+                    </div>
+                    <div class="size-option" data-mode="fill">
+                        <div class="size-icon"><i class="fas fa-arrows-alt-v"></i></div>
+                        <div class="size-name">По высоте</div>
+                    </div>
+                    <div class="size-option" data-mode="stretch">
+                        <div class="size-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+                        <div class="size-name">Растянуть</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Background -->
+            <div class="control-section">
+                <div class="section-title">
+                    <i class="fas fa-palette"></i>
+                    <span>Цвет фона </span>
+                </div>
+                
+                <div class="background-options">
+                    <div class="background-option active" data-bg="transparent">
+                        <div class="bg-icon transparent"></div>
+                        <div class="bg-name">Прозрачный</div>
+                    </div>
+                    <div class="background-option" data-bg="white">
+                        <div class="bg-icon white"></div>
+                        <div class="bg-name">Белый</div>
+                    </div>
+                    <div class="background-option" data-bg="black">
+                        <div class="bg-icon black"></div>
+                        <div class="bg-name">Чёрный</div>
+                    </div>
+                    <div class="background-option" data-bg="custom">
+                        <div class="bg-icon custom"><i class="fas fa-palette" style="color: white; line-height: 24px;"></i></div>
+                        <div class="bg-name">Свой цвет</div>
+                    </div>
+                </div>
+                
+                <div class="color-picker" id="bgColorPickerContainer">
+                    <div class="color-label">Цвет:</div>
+                    <input type="color" id="backgroundColorPicker" value="#3b82f6">
+                </div>
+            </div>
+        </main>
+
+        <!-- Download Button -->
+        <div class="download-section">
+            <button class="download-btn" id="splitAndDownloadBtn" disabled>
+                <i class="fas fa-download"></i>
+                <span>Скачать</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText"></span>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
+    <script>
+        // DOM Elements
+        const imageInput = document.getElementById('imageInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImage = document.getElementById('previewImage');
+        const gridOverlay = document.getElementById('gridOverlay');
+        const toggleGridBtn = document.getElementById('toggleGridBtn');
+        const splitAndDownloadBtn = document.getElementById('splitAndDownloadBtn');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        const loader = document.getElementById('loader');
+        const gridOptions = document.querySelectorAll('.grid-option');
+        const sizeOptions = document.querySelectorAll('.size-option');
+        const backgroundOptions = document.querySelectorAll('.background-option');
+        const bgColorPickerContainer = document.getElementById('bgColorPickerContainer');
+        const backgroundColorPicker = document.getElementById('backgroundColorPicker');
+
+        // State
+        let originalImage = null;
+        let gridCount = 2;
+        let isGridVisible = true;
+        let imageSizeMode = 'fit'; // 'fit', 'fill', 'stretch'
+        let backgroundColor = 'transparent'; // 'transparent', 'white', 'black', 'custom'
+        let customColor = '#3b82f6';
+
+        // Initialize
+        function init() {
+            setupEventListeners();
+            updateAspectRatio();
+            updateUI();
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            // Upload
+            uploadBtn.addEventListener('click', () => imageInput.click());
+            previewContainer.addEventListener('click', () => imageInput.click());
+            previewContainer.addEventListener('dragover', handleDragOver);
+            previewContainer.addEventListener('dragleave', handleDragLeave);
+            previewContainer.addEventListener('drop', handleDrop);
+            
+            imageInput.addEventListener('change', handleImageUpload);
+            
+            // Grid options
+            gridOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    gridCount = parseInt(option.dataset.value);
+                    updateGridOptions();
+                    updateAspectRatio();
+                    
+                    if (originalImage) {
+                        updateImageDisplay();
+                        if (isGridVisible) drawGrid();
+                    }
+                });
+            });
+            
+            // Size options
+            sizeOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    setImageSizeMode(option.dataset.mode);
+                });
+            });
+            
+            // Background options
+            backgroundOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    setBackgroundColor(option.dataset.bg);
+                });
+            });
+            
+            // Color picker
+            backgroundColorPicker.addEventListener('input', (e) => {
+                customColor = e.target.value;
+                if (backgroundColor === 'custom') {
+                    updatePreviewBackground();
+                    if (originalImage && isGridVisible) drawGrid();
+                }
+            });
+            
+            // Actions
+            toggleGridBtn.addEventListener('click', toggleGridVisibility);
+            splitAndDownloadBtn.addEventListener('click', splitAndDownload);
+            
+            // Window resize
+            window.addEventListener('resize', handleResize);
+            
+            // Prevent default drag and drop
+            document.addEventListener('dragover', (e) => e.preventDefault());
+            document.addEventListener('drop', (e) => e.preventDefault());
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadPlaceholder.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            if (!previewContainer.contains(e.relatedTarget)) {
+                uploadPlaceholder.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            uploadPlaceholder.classList.remove('drag-over');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                imageInput.files = files;
+                handleImageUpload();
+            }
+        }
+
+        function updateAspectRatio() {
+            previewContainer.style.aspectRatio = `${gridCount} / 1`;
+        }
+
+        function updateGridOptions() {
+            gridOptions.forEach(option => {
+                const value = parseInt(option.dataset.value);
+                option.classList.toggle('active', value === gridCount);
+            });
+        }
+
+        function setImageSizeMode(mode) {
+            imageSizeMode = mode;
+            
+            sizeOptions.forEach(option => {
+                option.classList.toggle('active', option.dataset.mode === mode);
+            });
+            
+            if (originalImage) {
+                updatePreviewImageStyle();
+                updateImageDisplay();
+                if (isGridVisible) drawGrid();
+            }
+        }
+
+        function setBackgroundColor(color) {
+            backgroundColor = color;
+            
+            backgroundOptions.forEach(option => {
+                option.classList.toggle('active', option.dataset.bg === color);
+            });
+            
+            if (color === 'custom') {
+                bgColorPickerContainer.style.display = 'flex';
+            } else {
+                bgColorPickerContainer.style.display = 'none';
+            }
+            
+            if (originalImage) {
+                updatePreviewBackground();
+                updateImageDisplay();
+                if (isGridVisible) drawGrid();
+            }
+        }
+
+        async function handleImageUpload() {
+            const file = imageInput.files[0];
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+                showNotification('Выберите файл изображения', 'error');
+                return;
+            }
+            
+            if (file.size > 10 * 1024 * 1024) {
+                showNotification('Файл должен быть меньше 10MB', 'error');
+                return;
+            }
+            
+            showLoader();
+            
+            try {
+                const imageData = await readFileAsDataURL(file);
+                originalImage = new Image();
+                
+                originalImage.onload = () => {
+                    previewImage.src = imageData;
+                    previewImage.style.display = 'block';
+                    uploadPlaceholder.style.display = 'none';
+                    splitAndDownloadBtn.disabled = false;
+                    
+                    updatePreviewImageStyle();
+                    updatePreviewBackground();
+                    updateImageDisplay();
+                    
+                    if (isGridVisible) drawGrid();
+                    
+                    hideLoader();
+                    showNotification('Изображение загружено');
+                };
+                
+                originalImage.onerror = () => {
+                    hideLoader();
+                    showNotification('Ошибка загрузки изображения', 'error');
+                };
+                
+                originalImage.src = imageData;
+            } catch (error) {
+                hideLoader();
+                showNotification('Ошибка чтения файла', 'error');
+            }
+        }
+
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updatePreviewImageStyle() {
+            if (!originalImage) return;
+            
+            switch(imageSizeMode) {
+                case 'fit':
+                    previewImage.style.objectFit = 'contain';
+                    break;
+                case 'fill':
+                    previewImage.style.objectFit = 'cover';
+                    break;
+                case 'stretch':
+                    previewImage.style.objectFit = 'fill';
+                    break;
+            }
+        }
+
+        function updatePreviewBackground() {
+            const bgColor = getBackgroundColor(true);
+            previewContainer.style.backgroundColor = bgColor || 'transparent';
+        }
+
+        function getBackgroundColor(forPreview = false) {
+            switch(backgroundColor) {
+                case 'transparent': return forPreview ? 'transparent' : null;
+                case 'white': return '#ffffff';
+                case 'black': return '#000000';
+                case 'custom': return customColor;
+                default: return null;
+            }
+        }
+
+        function updateImageDisplay() {
+            if (!originalImage) return;
+            
+            const width = previewContainer.clientWidth;
+            const height = previewContainer.clientHeight;
+            
+            gridOverlay.width = width;
+            gridOverlay.height = height;
+            
+            if (isGridVisible) drawGrid();
+        }
+
+        function handleResize() {
+            if (originalImage) {
+                updateImageDisplay();
+                if (isGridVisible) drawGrid();
+            }
+        }
+
+        function drawGrid() {
+            if (!originalImage) return;
+            
+            const ctx = gridOverlay.getContext('2d');
+            const width = gridOverlay.width;
+            const height = gridOverlay.height;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            const squareSize = width / gridCount;
+            
+            // Draw grid lines
+            ctx.strokeStyle = 'rgba(59, 130, 246, 0.7)';
+            ctx.lineWidth = 2;
+            
+            // Vertical lines
+            for (let i = 1; i < gridCount; i++) {
+                const x = i * squareSize;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+            
+            // Horizontal lines
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(width, 0);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(0, height);
+            ctx.lineTo(width, height);
+            ctx.stroke();
+            
+            // Add numbers
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.9)';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            for (let i = 0; i < gridCount; i++) {
+                const x = i * squareSize + squareSize / 2;
+                const y = height / 2;
+                ctx.fillText(i + 1, x, y);
+            }
+        }
+
+        function toggleGridVisibility() {
+            isGridVisible = !isGridVisible;
+            
+            if (isGridVisible) {
+                gridOverlay.style.display = 'block';
+                toggleGridBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                toggleGridBtn.title = 'Скрыть сетку';
+                if (originalImage) drawGrid();
+            } else {
+                gridOverlay.style.display = 'none';
+                toggleGridBtn.innerHTML = '<i class="fas fa-eye"></i>';
+                toggleGridBtn.title = 'Показать сетку';
+            }
+        }
+
+        async function splitAndDownload() {
+            if (!originalImage) {
+                showNotification('Сначала загрузите изображение', 'error');
+                return;
+            }
+            
+            showLoader();
+            showNotification('Создание квадратов...');
+            
+            try {
+                const squareSize = 1024;
+                const totalWidth = squareSize * gridCount;
+                const totalHeight = squareSize;
+                
+                // Create main canvas
+                const mainCanvas = document.createElement('canvas');
+                mainCanvas.width = totalWidth;
+                mainCanvas.height = totalHeight;
+                const mainCtx = mainCanvas.getContext('2d');
+                
+                // Fill background
+                const bgColor = getBackgroundColor();
+                if (bgColor) {
+                    mainCtx.fillStyle = bgColor;
+                    mainCtx.fillRect(0, 0, totalWidth, totalHeight);
+                }
+                
+                // Calculate image dimensions
+                let drawWidth, drawHeight, drawX, drawY;
+                const imgRatio = originalImage.width / originalImage.height;
+                
+                switch(imageSizeMode) {
+                    case 'fit':
+                        drawWidth = totalWidth;
+                        drawHeight = drawWidth / imgRatio;
+                        drawX = 0;
+                        drawY = (totalHeight - drawHeight) / 2;
+                        break;
+                        
+                    case 'fill':
+                        drawHeight = totalHeight;
+                        drawWidth = drawHeight * imgRatio;
+                        drawX = (totalWidth - drawWidth) / 2;
+                        drawY = 0;
+                        break;
+                        
+                    case 'stretch':
+                        drawWidth = totalWidth;
+                        drawHeight = totalHeight;
+                        drawX = 0;
+                        drawY = 0;
+                        break;
+                }
+                
+                // Draw image with high quality
+                mainCtx.imageSmoothingEnabled = true;
+                mainCtx.imageSmoothingQuality = 'high';
+                mainCtx.drawImage(originalImage, drawX, drawY, drawWidth, drawHeight);
+                
+                // Create zip file
+                const zip = new JSZip();
+                
+                for (let i = 0; i < gridCount; i++) {
+                    const squareCanvas = document.createElement('canvas');
+                    squareCanvas.width = squareSize;
+                    squareCanvas.height = squareSize;
+                    const squareCtx = squareCanvas.getContext('2d');
+                    
+                    // Fill background
+                    if (bgColor) {
+                        squareCtx.fillStyle = bgColor;
+                        squareCtx.fillRect(0, 0, squareSize, squareSize);
+                    }
+                    
+                    // Draw square from main canvas
+                    const sourceX = i * squareSize;
+                    squareCtx.imageSmoothingEnabled = true;
+                    squareCtx.imageSmoothingQuality = 'high';
+                    squareCtx.drawImage(
+                        mainCanvas,
+                        sourceX, 0, squareSize, squareSize,
+                        0, 0, squareSize, squareSize
+                    );
+                    
+                    // Add to zip
+                    const blob = await canvasToBlob(squareCanvas);
+                    zip.file(`square-${i + 1}.png`, blob);
+                }
+                
+                // Generate and download zip
+                const content = await zip.generateAsync({type: "blob"});
+                saveAs(content, `grid-${gridCount}-squares.zip`);
+                
+                hideLoader();
+                showNotification(`Скачано ${gridCount} квадратов`);
+                
+            } catch (error) {
+                console.error('Error creating squares:', error);
+                hideLoader();
+                showNotification('Ошибка создания квадратов', 'error');
+            }
+        }
+
+        function canvasToBlob(canvas) {
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => resolve(blob), 'image/png', 1.0);
+            });
+        }
+
+        function updateUI() {
+            previewImage.style.display = 'none';
+            uploadPlaceholder.style.display = 'flex';
+            splitAndDownloadBtn.disabled = true;
+            gridOverlay.style.display = 'block';
+            bgColorPickerContainer.style.display = 'none';
+        }
+
+        function showNotification(message, type = 'success') {
+            notificationText.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add(type);
+            notification.classList.add('show');
+            
+            const icon = notification.querySelector('i');
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle';
+            } else {
+                icon.className = 'fas fa-exclamation-circle';
+            }
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function showLoader() {
+            loader.classList.add('active');
+        }
+
+        function hideLoader() {
+            loader.classList.remove('active');
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
