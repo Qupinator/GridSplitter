@@ -575,7 +575,7 @@
                         <div class="bg-name">Свой цвет</div>
                     </div>
                 </div>
-                
+
                 <!-- Hidden color input -->
                 <input type="color" id="backgroundColorPicker" class="hidden-color-input" value="#3b82f6">
             </div>
@@ -678,12 +678,12 @@
             // Custom color picker
             colorPreview.addEventListener('click', () => backgroundColorPicker.click());
             colorPickerBtn.addEventListener('click', () => backgroundColorPicker.click());
-            
+
             // Color picker input
             backgroundColorPicker.addEventListener('input', (e) => {
                 customColor = e.target.value;
                 updateColorPreview();
-                
+
                 if (backgroundColor === 'custom') {
                     updatePreviewBackground();
                     if (originalImage && isGridVisible) drawGrid();
@@ -1032,12 +1032,22 @@
 
                     // Add to zip
                     const blob = await canvasToBlob(squareCanvas);
-                    zip.file(`square-${i + 1}.png`, blob);
+                    zip.file(`квадрат-${i + 1}.png`, blob);
                 }
 
-                // Generate and download zip
+                // Generate timestamp for filename
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+
+                // Generate and download zip with timestamp
                 const content = await zip.generateAsync({ type: "blob" });
-                saveAs(content, `grid-${gridCount}-squares.zip`);
+                const filename = `grid-(${gridCount})-${year}-${month}-${day}_${hours}-${minutes}-${seconds}.zip`;
+                saveAs(content, filename);
 
                 hideLoader();
                 showNotification(`Скачано ${gridCount} квадратов`);
