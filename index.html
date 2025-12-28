@@ -537,12 +537,12 @@
 
                 <div class="size-options">
                     <div class="size-option active" data-mode="fit">
-                        <div class="size-icon"><i class="fas fa-arrows-alt-v"></i></div>
-                        <div class="size-name">По высоте</div>
-                    </div>
-                    <div class="size-option" data-mode="fill">
                         <div class="size-icon"><i class="fas fa-arrows-alt-h"></i></div>
                         <div class="size-name">По ширине</div>
+                    </div>
+                    <div class="size-option" data-mode="fill">
+                        <div class="size-icon"><i class="fas fa-arrows-alt-v"></i></div>
+                        <div class="size-name">По высоте</div>
                     </div>
                     <div class="size-option" data-mode="stretch">
                         <div class="size-icon"><i class="fas fa-expand-arrows-alt"></i></div>
@@ -838,10 +838,10 @@
 
             switch (imageSizeMode) {
                 case 'fit':
-                    previewImage.style.objectFit = 'contain';
+                    previewImage.style.objectFit = 'cover';
                     break;
                 case 'fill':
-                    previewImage.style.objectFit = 'cover';
+                    previewImage.style.objectFit = 'contain';
                     break;
                 case 'stretch':
                     previewImage.style.objectFit = 'fill';
