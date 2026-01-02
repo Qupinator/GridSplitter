@@ -956,6 +956,15 @@
             showNotification('Создание квадратов...');
 
             try {
+                // Generate timestamp for filename - ПЕРЕМЕЩЕНО ВЫШЕ
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                
                 const squareSize = 1024;
                 const totalWidth = squareSize * gridCount;
                 const totalHeight = squareSize;
@@ -1032,17 +1041,8 @@
 
                     // Add to zip
                     const blob = await canvasToBlob(squareCanvas);
-                    zip.file(`квадрат_(${gridCount})-${year}-${month}-${day}_${hours}-${minutes}-${seconds}.png`, blob);
+                    zip.file(`квадрат_(${gridCount})-${year}-${month}-${day}_${hours}-${minutes}-${seconds}_${i + 1}.png`, blob);
                 }
-
-                // Generate timestamp for filename
-                const now = new Date();
-                const year = now.getFullYear();
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const day = String(now.getDate()).padStart(2, '0');
-                const hours = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                const seconds = String(now.getSeconds()).padStart(2, '0');
 
                 // Generate and download zip with timestamp
                 const content = await zip.generateAsync({ type: "blob" });
@@ -1103,7 +1103,4 @@
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-
-
 </html>
-
