@@ -41,7 +41,8 @@
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            flex: 1;
+            height: 100%;
         }
 
         /* Header */
@@ -838,10 +839,10 @@
 
             switch (imageSizeMode) {
                 case 'fit':
-                    previewImage.style.objectFit = 'contain';
+                    previewImage.style.objectFit = 'cover';
                     break;
                 case 'fill':
-                    previewImage.style.objectFit = 'cover';
+                    previewImage.style.objectFit = 'contain';
                     break;
                 case 'stretch':
                     previewImage.style.objectFit = 'fill';
