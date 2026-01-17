@@ -2,911 +2,1106 @@
 <html lang="ru">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Участие в розыгрыше</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-	<script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grid Splitter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+        }
 
-	<style>
-:root {
-		--primary: #3b82f6;
-		--primary-dark: #2563eb;
-		--bg-dark: #0f172a;
-		--card-bg: rgba(30, 41, 59, 0.6);
-		--text-primary: #f8fafc;
-		--text-secondary: #94a3b8;
-		--input-border: rgba(255, 255, 255, 0.1);
-		--danger: #ff253b;
-		--info: #fd7e14;
-		--warning: #ffc107;
-		--success: #198754;
-	}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-		* {
-			box-sizing: border-box;
-			margin: 0;
-			padding: 0;
-			-webkit-tap-highlight-color: transparent;
-		}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.4;
+            padding: 0;
+            height: 100dvh;
 
-		@font-face {
-			font-family: 'Standart';
-			src: url('stealfont.woff');
-		}
+        }
 
-		body {
-			background: var(--bg-dark);
-			color: var(--text-primary);
-			padding: 20px;
-			height: 100dvh;
-			font-family: 'Standart', sans-serif;
-		}
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-		.container {
-			max-width: 400px;
-			margin: 0 auto;
-			height: /*calc(100dvh - 40px)*/ fit-content;
-			display: flex;
-			flex-direction: column;
-		}
+        /* Header */
+        .header {
+            background: var(--surface);
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--surface-light);
+        }
 
-		/* Кнопка закрытия/логотип в Telegram стиле */
-		.tg-title-btn {
-			text-align: center;
-			margin-block: 20px
-		}
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
 
-		.badge-row {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			margin: 10px 0;
-		}
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
 
-		.giveaway-badge {
-			display: flex;
-			align-items: center;
-			gap: 5px;
-		}
+        .header-btn {
+            background: var(--surface-light);
+            border: none;
+            color: var(--text);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
 
-		.badge-text {
-			font-size: 0.85rem;
-			color: var(--text-secondary);
-			text-transform: uppercase;
-			letter-spacing: 1px;
-		}
+        .header-btn:hover {
+            background: var(--primary);
+        }
 
-		.badge-id,
-		.time {
-			color: var(--text-secondary);
-			font-size: 0.9rem;
-			background: var(--card-bg);
-			padding: 2px 8px;
-			border-radius: 6px;
-			border: 1px solid rgba(255, 255, 255, 0.05);
-		}
+        .header-btn:active {
+            transform: scale(0.95);
+        }
 
-		.countdown-badge {
-			display: flex;
-			align-items: center;
-			gap: 6px;
-			font-size: 0.85rem;
-		}
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            width: 100%;
+            margin: 0 auto;
+            gap: 10px;
+        }
 
-		.countdown-badge .label {
-			color: var(--text-secondary);
-			text-transform: uppercase;
-			letter-spacing: 1px;
-		}
+        /* Image Preview/Upload */
+        .image-upload {
+            width: 100%;
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--surface-light);
+            cursor: pointer;
+        }
 
-		.main-title {
-			text-align: center;
-			margin-top: 10px;
-		}
+        #previewImage {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+        }
 
-		.title-text {
-			font-size: 2.5rem;
-			line-height: 1;
-			color: var(--text-primary);
-			letter-spacing: -0.5px;
-		}
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
 
-		.subtitle-row {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: nowrap;
-			align-items: center;
-			justify-content: center;
-			margin-block: 5px 20px;
-			gap: 10px;
-		}
+        .upload-placeholder {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
 
-		.subtitle {
-			text-align: center;
-			color: var(--text-secondary);
-			font-size: 0.85rem;
-			letter-spacing: 0.2px;
-			line-height: 1.4;
-			overflow: hidden;
-			display: -webkit-box;
-			-webkit-line-clamp: 1;
-			-webkit-box-orient: vertical;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-		}
+        .upload-placeholder i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
 
-		/* Обновленный full-btn в стиле основной кнопки */
-		.full-btn {
-			background: linear-gradient(45deg, var(--primary), var(--primary-dark));
-			color: white;
-			border: none;
-			padding: 6px 15px;
-			border-radius: 15px;
-			font-size: 0.85rem;
-			cursor: pointer;
-			font-weight: 600;
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
-			transition: transform 0.2s;
-		}
+        .upload-placeholder p {
+            font-size: 14px;
+            text-align: center;
+        }
 
-		.full-btn:hover {
-			transform: translateY(-1px);
-		}
+        .upload-placeholder.drag-over {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px dashed var(--primary);
+        }
 
-		/* Минималистичный блок данных Telegram */
-		.tg-user-minimal {
-			display: flex;
-			background: rgba(0, 0, 0, 0.3);
-			padding: 3px 10px 3px 3px;
-			justify-content: center;
-			align-items: center;
-			width: fit-content;
-			margin: 0 auto;
-			border-radius: 15px;
-			line-height: 1;
-			font-size: 0.9rem;
-			gap: 6px;
-			backdrop-filter: blur(10px);
-		}
+        #imageInput {
+            display: none;
+        }
 
-		.tg-user-avatar {
-			width: 20px;
-			height: 20px;
-			border-radius: 50%;
-			object-fit: cover;
-			border: 1px solid rgba(255, 255, 255, 0.2);
-		}
+        /* Controls */
+        .control-section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--surface-light);
+        }
 
-		/* Обновленные стили для капчи */
-		.captcha-section {
-			margin: 15px 0;
-		}
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-		.captcha-title {
-			font-size: 0.9rem;
-			color: var(--text-secondary);
-			letter-spacing: 0.5px;
-			margin-bottom: 10px;
-			text-align: center;
-		}
+        .section-title span {
+            width: 100%;
+        }
 
-		.captcha-display {
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			margin-bottom: 15px;
-		}
+        .section-title i {
+            color: var(--primary);
+        }
 
-		.canvas-container {
-			flex: 1;
-			height: 67px;
-			background: #1a1a1a;
-			border-radius: 15px;
-			overflow: hidden;
-			border: 2px solid rgba(255, 255, 255, 0.1);
-		}
+        /* Grid Control */
+        .grid-container {
+            display: flex;
+            flex-direction: column;
+        }
 
-		#captchaCanvas {
-			width: 100%;
-			height: 100%;
-		}
+        .grid-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
 
-		/* Кнопка обновления капчи в размер инпута */
-		.refresh-btn {
-			width: 67px;
-			height: 67px;
-			border-radius: 15px;
-			background: rgba(255, 255, 255, 0.05);
-			border: 2px solid rgba(255, 255, 255, 0.1);
-			color: white;
-			font-size: 20px;
-			cursor: pointer;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			flex-shrink: 0;
-			transition: all 0.2s;
-		}
+        .grid-row:first-child .grid-option {
+            flex: 1;
+            margin: 0 4px;
+        }
 
-		.refresh-btn:hover {
-			background: rgba(255, 255, 255, 0.1);
-			transform: rotate(90deg);
-		}
+        .grid-row:last-child {
+            margin-bottom: 0;
+        }
 
-		.captcha-inputs-row {
-			display: flex;
-			gap: 8px;
-			width: 100%;
-		}
+        .grid-row:last-child .grid-option {
+            flex: 1;
+            margin: 0 4px;
+        }
 
-		.captcha-input {
-			flex: 1;
-			height: 60px;
-			font-size: 1.8rem;
-			letter-spacing: 4px;
-			text-transform: uppercase;
-			text-align: center;
-			padding: 0;
-			min-width: 0;
-			background: rgba(255, 255, 255, 0.05);
-			border: 2px solid rgba(255, 255, 255, 0.1);
-			border-radius: 15px;
-			color: white;
-			outline: none;
-			font-family: 'Standart';
-		}
+        .grid-option {
+            padding: 7px 0;
+            background: var(--surface-light);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
 
-		.captcha-input:focus {
-			border-color: var(--primary);
-		}
+        .grid-option.active {
+            background: var(--primary);
+            color: white;
+        }
 
-		/* Обновленные стили для формы */
-		.reg-form {
-			height: fit-content;
-			display: flex;
-			flex-direction: column;
-			justify-content: space-between;
-		}
+        /* Size Mode */
+        .size-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
 
-		.content {
-			display: flex;
-			flex-direction: column;
-			gap: 24px;
-		}
+        .size-option {
+            padding: 8px;
+            background: var(--surface-light);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-		.form-group {
-			display: flex;
-			flex-direction: column;
-			gap: 3px;
-		}
+        .size-option.active {
+            background: var(--primary);
+            color: white;
+        }
 
-		.form-group label {
-			font-size: 0.9rem;
-			letter-spacing: 0.5px;
-			text-align: center;
-			color: var(--text-secondary);
-		}
+        .size-icon {
+            font-size: 14px;
+        }
 
-		input {
-			width: 100%;
-			padding: 0 16px;
-			height: 67px;
-			border-radius: 20px;
-			font-size: 1.8rem;
-			background: rgba(255, 255, 255, 0.05);
-			border: 2px solid rgba(255, 255, 255, 0.1);
-			color: white;
-			text-align: center;
-			outline: none;
-			font-family: 'Standart';
-		}
+        .size-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
 
-		input:focus {
-			border-color: var(--primary);
-		}
+        /* Background */
+        .background-options {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+        }
 
-		input::placeholder {
-			color: rgba(255, 255, 255, 0.3);
-		}
+        .background-option {
+            padding: 8px;
+            width: 100%;
+            background: var(--surface-light);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            transition: all 0.2s;
+        }
 
-		#account {
-			letter-spacing: 6px;
-		}
+        .background-option.active {
+            background: var(--primary);
+            color: white;
+        }
 
-		/* Кнопка участия */
-		.btn-primary {
-			background: linear-gradient(45deg, var(--primary), var(--primary-dark));
-			color: white;
-			font-size: 18px;
-			border-radius: 20px;
-			border: none;
-			width: 100%;
-			cursor: pointer;
-			height: 67px;
-			margin-top: 10px;
-			text-transform: uppercase;
-			letter-spacing: 2px;
-			font-weight: 700;
-			transition: transform 0.2s, opacity 0.2s;
-			text-align: center;
-		}
+        .bg-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            margin: 0 auto 2px;
+            font-size: 0.8rem;
+            line-height: 1;
+        }
 
-		.btn-primary:hover {
-			transform: translateY(-2px);
-		}
+        .transparent {
+            background: repeating-conic-gradient(#475569 0% 25%, transparent 0% 50%) 50%/10px 10px;
+        }
 
-		.btn-primary:disabled {
-			opacity: 0.6;
-			cursor: not-allowed;
-			transform: none;
-		}
+        .white {
+            background: white;
+            border: 1px solid #e2e8f0;
+        }
 
-		.form-groups {
-			display: flex;
-			flex-direction: column;
-			gap: 20px;
-		}
+        .black {
+            background: black;
+        }
 
-		.footer {
-			text-align: center;
-			margin: 20px 0 10px;
-			color: var(--text-secondary);
-			font-size: 0.65rem;
-			line-height: 1.4;
-			opacity: .5;
-		}
+        .custom {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+        }
 
-		.footer a {
-			color: var(--primary);
-			text-decoration: none;
-		}
+        .bg-name {
+            font-size: 11px;
+            font-weight: 600;
+        }
 
-		.only-telegram {
-			gap: 20px;
-			padding: 10px 20px;
-			background: #1c2235;
-			border-radius: 14px;
-			width: fit-content;
-			margin: 100px auto;
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			max-width: 400px;
-			box-shadow: 0 0 30px #1c2235;
-		}
-	</style>
+        /* Custom Color Picker */
+        .custom-color-picker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 22px;
+            max-height: 22px;
+        }
+
+        .color-preview {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 1px solid var(--surface-light);
+            cursor: pointer;
+            background: var(--current-color, #3b82f6);
+        }
+
+        .color-picker-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        .color-picker-btn:hover {
+            background: var(--surface-light);
+        }
+
+        .color-picker-btn:active {
+            transform: scale(0.95);
+        }
+
+        .hidden-color-input {
+            display: none;
+        }
+
+        /* Download Button */
+        .download-section {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .download-btn {
+            width: 100%;
+            max-width: 400px;
+            padding: 18px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+            margin: 10px;
+            margin-top: 0;
+        }
+
+        .download-btn:active {
+            transform: scale(0.98);
+            background: var(--primary-dark);
+        }
+
+        .download-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--surface);
+            color: var(--text);
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s;
+            border: 1px solid var(--surface-light);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 90%;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--error);
+        }
+
+        /* Loader */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--surface-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 340px) {
+
+            .background-options,
+            .size-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 
 <body>
-	<!-- Кнопка закрытия в стиле Telegram -->
-	<div class="tg-title-btn tg-user-minimal" id="closeBtn">
-		<img class="tg-user-avatar" src="mcbotlogo.png">
-		MalCoin
-	</div>
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
 
-	<div class="container">
-		<div class="badge-row">
-			<div class="giveaway-badge">
-				<span class="badge-text">Розыгрыш</span>
-				<span class="badge-id">#1288</span>
-			</div>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">Grid Splitter</div>
+            <div class="header-buttons">
+                <button class="header-btn" id="uploadBtn" title="Загрузить изображение">
+                    <i class="fas fa-upload"></i>
+                </button>
+                <button class="header-btn" id="toggleGridBtn" title="Скрыть сетку">
+                    <i class="fas fa-eye-slash"></i>
+                </button>
+            </div>
+        </header>
 
-			<div class="countdown-badge">
-				<span class="label">До конца</span>
-				<span class="time" id="timer">--:--:--</span>
-			</div>
-		</div>
+        <input type="file" id="imageInput" accept="image/*">
 
-		<div class="main-title">
-			<h1 class="title-text">Регистрация</h1>
-		</div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Image Preview/Upload Area -->
+            <div class="image-upload" id="previewContainer">
+                <img id="previewImage" src="" alt="Предпросмотр">
+                <canvas id="gridOverlay" class="grid-overlay"></canvas>
+                <div class="upload-placeholder" id="uploadPlaceholder">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Нажмите или перетащите изображение</p>
+                </div>
+            </div>
 
-		<div class="subtitle-row">
-			<span class="subtitle">1.000.000 ₽ |
-				4 победителя по 250.000 ₽ на каждый сервер</span>
-			<button class="full-btn">ещё</button>
-		</div>
+            <!-- Grid Control -->
+            <div class="control-section">
+                <div class="section-title">
+                    <i class="fas fa-th"></i>
+                    <span>Количество изображений</span>
+                </div>
 
-		<!-- Минималистичный блок данных Telegram -->
-
-
-		<form class="reg-form" id="registrationForm">
-			<div class="content">
-				<div class="form-groups">
-					<div class="form-group">
-						<label>Игровой никнейм</label>
-						<input type="text" id="nickname" maxlength="20" placeholder="Ivan_Ivanov" autocomplete="off"
-						required>
-					</div>
-
-					<div class="form-group">
-						<label>Номер банка</label>
-						<input type="text" id="account" minlength="1" maxlength="7" placeholder="123456"
-						pattern="[1-9][0-9]{0,6}"
-						oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 0 && this.value[0] === '0') this.value = this.value.substring(1);"
-						autocomplete="off" required>
-					</div>
-
-					<!-- Обновленный блок капчи -->
-					<div class="captcha-section">
-						<div class="captcha-title">
-							Введите символы с изображения
-						</div>
-						<div class="captcha-display">
-							<div class="canvas-container">
-								<canvas id="captchaCanvas"></canvas>
-							</div>
-							<button type="button" class="refresh-btn" id="refreshCaptcha" title="Обновить капчу">
-								<i class="bi bi-arrow-repeat"></i>
-							</button>
-						</div>
-						<div class="captcha-inputs-row" id="captchaInputsContainer">
-							<!-- 6 инпутов будут сгенерированы через JS -->
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="footer">
-				Нажимая кнопку <u>Участвовать</u> вы автоматически принимаете
-				<a href="#" target="_blank">Пользовательское соглашение</a> и
-				<a href="#" target="_blank">Политику конфиденциальности</a>
-			</div>
-
-			<button type="submit" class="btn-primary" id="submitBtn">
-				<span>Участвовать</span>
-				<span class="tg-user-minimal">
-					<img class="tg-user-avatar" id="userAvatar" src="song.jpg">
-					<span id="userName">Qupin</span>
-				</span>
-			</button>
-		</form>
-	</div>
-
-	<script>
-		// Инициализация Telegram Web App
-		/*const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.enableClosingConfirmation();
-        // Проверка, что открыто в Telegram
-        if (!tg.initDataUnsafe?.user) {
-            document.body.innerHTML = `
-                <div class="only-telegram">
-                    <i class="bi bi-x-circle" style="font-size:35px;line-height:0.9;color:var(--danger)"></i>
-                    <div>
-                        <h2 style="color:var(--danger);font-weight:500">Ошибка</h2>
-                        <p class="danger-info">Приложение должно быть открыто внутри Telegram!</p>
+                <div class="grid-container">
+                    <div class="grid-row">
+                        <div class="grid-option active" data-value="2">2</div>
+                        <div class="grid-option" data-value="3">3</div>
+                        <div class="grid-option" data-value="4">4</div>
+                        <div class="grid-option" data-value="5">5</div>
+                        <div class="grid-option" data-value="6">6</div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-option" data-value="7">7</div>
+                        <div class="grid-option" data-value="8">8</div>
+                        <div class="grid-option" data-value="9">9</div>
+                        <div class="grid-option" data-value="10">10</div>
                     </div>
                 </div>
-                `;
-            throw new Error('Not in Telegram');
+            </div>
+
+            <!-- Size Mode -->
+            <div class="control-section">
+                <div class="section-title">
+                    <i class="fas fa-expand-alt"></i>
+                    <span>Размер изображения</span>
+                </div>
+
+                <div class="size-options">
+                    <div class="size-option active" data-mode="fit">
+                        <div class="size-icon"><i class="fas fa-arrows-alt-h"></i></div>
+                        <div class="size-name">По ширине</div>
+                    </div>
+                    <div class="size-option" data-mode="fill">
+                        <div class="size-icon"><i class="fas fa-arrows-alt-v"></i></div>
+                        <div class="size-name">По высоте</div>
+                    </div>
+                    <div class="size-option" data-mode="stretch">
+                        <div class="size-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+                        <div class="size-name">Растянуть</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Background -->
+            <div class="control-section">
+                <div class="section-title">
+                    <i class="fas fa-palette"></i>
+                    <span> Цвет фона</span>
+                    <div class="custom-color-picker" id="customColorPicker">
+                        <div class="color-preview" id="colorPreview"></div>
+                        <button class="color-picker-btn" id="colorPickerBtn" title="Выбрать цвет">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="background-options">
+                    <div class="background-option active" data-bg="transparent">
+                        <div class="bg-icon transparent"></div>
+                        <div class="bg-name">Прозрачный</div>
+                    </div>
+                    <div class="background-option" data-bg="custom">
+                        <div class="bg-icon custom"><i class="fas fa-palette"
+                                style="color: white; line-height: 24px;"></i></div>
+                        <div class="bg-name">Свой цвет</div>
+                    </div>
+                </div>
+                
+                <!-- Hidden color input -->
+                <input type="color" id="backgroundColorPicker" class="hidden-color-input" value="#3b82f6">
+            </div>
+        </main>
+
+        <!-- Download Button -->
+        <div class="download-section">
+            <button class="download-btn" id="splitAndDownloadBtn" disabled>
+                <i class="fas fa-download"></i>
+                <span>Скачать</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText"></span>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <script>
+        // DOM Elements
+        const imageInput = document.getElementById('imageInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImage = document.getElementById('previewImage');
+        const gridOverlay = document.getElementById('gridOverlay');
+        const toggleGridBtn = document.getElementById('toggleGridBtn');
+        const splitAndDownloadBtn = document.getElementById('splitAndDownloadBtn');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        const loader = document.getElementById('loader');
+        const gridOptions = document.querySelectorAll('.grid-option');
+        const sizeOptions = document.querySelectorAll('.size-option');
+        const backgroundOptions = document.querySelectorAll('.background-option');
+        const customColorPicker = document.getElementById('customColorPicker');
+        const colorPreview = document.getElementById('colorPreview');
+        const colorPickerBtn = document.getElementById('colorPickerBtn');
+        const backgroundColorPicker = document.getElementById('backgroundColorPicker');
+
+        // State
+        let originalImage = null;
+        let gridCount = 2;
+        let isGridVisible = true;
+        let imageSizeMode = 'fit'; // 'fit', 'fill', 'stretch'
+        let backgroundColor = 'transparent'; // 'transparent', 'white', 'black', 'custom'
+        let customColor = '#3b82f6';
+
+        // Initialize
+        function init() {
+            setupEventListeners();
+            updateAspectRatio();
+            updateColorPreview();
+            updateUI();
         }
-*/
-		const user = tg.initDataUnsafe.user;
-		const giveawayId = new URLSearchParams(window.location.search).get('giveaway_id') || '1';
 
-		// Функция для обновления данных пользователя
-		function updateUserProfile() {
-			const userNameElement = document.getElementById('userName');
-			const userAvatarElement = document.getElementById('userAvatar');
+        // Event Listeners
+        function setupEventListeners() {
+            // Upload
+            uploadBtn.addEventListener('click', () => imageInput.click());
+            previewContainer.addEventListener('click', () => imageInput.click());
+            previewContainer.addEventListener('dragover', handleDragOver);
+            previewContainer.addEventListener('dragleave', handleDragLeave);
+            previewContainer.addEventListener('drop', handleDrop);
 
-			// Установка имени пользователя
-			if (user.first_name) {
-				userNameElement.textContent = user.first_name;
-			} else if (user.username) {
-				userNameElement.textContent = user.username;
-			} else {
-				userNameElement.textContent = 'User';
-			}
+            imageInput.addEventListener('change', handleImageUpload);
 
-			// Установка аватарки пользователя
-			if (user.photo_url) {
-				userAvatarElement.src = user.photo_url;
-			} else {
-				userAvatarElement.src = 'song.jpg';
-			}
+            // Grid options
+            gridOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    gridCount = parseInt(option.dataset.value);
+                    updateGridOptions();
+                    updateAspectRatio();
 
-			// Обработчик ошибки загрузки аватарки
-			userAvatarElement.onerror = function () {
-				this.src = 'song.jpg';
-			};
-		}
+                    if (originalImage) {
+                        updateImageDisplay();
+                        if (isGridVisible) drawGrid();
+                    }
+                });
+            });
 
-		// Конфигурация капчи (усложненная)
-		const CAPTCHA_CONFIG = {
-			length: 6,
-			characters: 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789',
-			width: 300,
-			height: 67,
-			noise: 150,
-			lines: 15,
-			dots: 100,
-			circles: 8,
-			fonts: ['Arial',
-				'Verdana',
-				'Tahoma',
-				'Courier New',
-				'Georgia'],
-			colors: ['#3b82f6',
-				'#10b981',
-				'#f59e0b',
-				'#ef4444',
-				'#8b5cf6',
-				'#ec4899',
-				'#06b6d4'],
-			distortion: {
-				amplitude: 10,
-				frequency: 0.05
-			}
-		};
+            // Size options
+            sizeOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    setImageSizeMode(option.dataset.mode);
+                });
+            });
 
-		let currentCaptcha = '';
-		let canvas, ctx;
-		let captchaInputs = [];
+            // Background options
+            backgroundOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    setBackgroundColor(option.dataset.bg);
+                });
+            });
 
-		// Создание 6 инпутов для капчи
-		function createCaptchaInputs() {
-			const container = document.getElementById('captchaInputsContainer');
-			container.innerHTML = '';
-			captchaInputs = [];
+            // Custom color picker
+            colorPreview.addEventListener('click', () => backgroundColorPicker.click());
+            colorPickerBtn.addEventListener('click', () => backgroundColorPicker.click());
+            
+            // Color picker input
+            backgroundColorPicker.addEventListener('input', (e) => {
+                customColor = e.target.value;
+                updateColorPreview();
+                
+                if (backgroundColor === 'custom') {
+                    updatePreviewBackground();
+                    if (originalImage && isGridVisible) drawGrid();
+                }
+            });
 
-			for (let i = 0; i < CAPTCHA_CONFIG.length; i++) {
-				const input = document.createElement('input');
-				input.type = 'text';
-				input.maxLength = 1;
-				input.className = 'captcha-input';
-				input.dataset.index = i;
+            // Actions
+            toggleGridBtn.addEventListener('click', toggleGridVisibility);
+            splitAndDownloadBtn.addEventListener('click', splitAndDownload);
 
-				input.addEventListener('input', function(e) {
-					const value = this.value.toUpperCase();
-					this.value = value;
+            // Window resize
+            window.addEventListener('resize', handleResize);
 
-					if (value && i < CAPTCHA_CONFIG.length - 1) {
-						captchaInputs[i + 1].focus();
-					}
-					checkCaptchaCompletion();
-				});
+            // Prevent default drag and drop
+            document.addEventListener('dragover', (e) => e.preventDefault());
+            document.addEventListener('drop', (e) => e.preventDefault());
+        }
 
-				input.addEventListener('keydown',
-					function(e) {
-						if (e.key === 'Backspace' && !this.value && i > 0) {
-							e.preventDefault();
-							captchaInputs[i - 1].focus();
-							captchaInputs[i - 1].value = '';
-							captchaInputs[i - 1].select();
-						}
+        function updateColorPreview() {
+            colorPreview.style.setProperty('--current-color', customColor);
+        }
 
-						if (e.key === 'ArrowLeft' && i > 0) {
-							e.preventDefault();
-							captchaInputs[i - 1].focus();
-							captchaInputs[i - 1].select();
-						}
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadPlaceholder.classList.add('drag-over');
+        }
 
-						if (e.key === 'ArrowRight' && i < CAPTCHA_CONFIG.length - 1) {
-							e.preventDefault();
-							captchaInputs[i + 1].focus();
-							captchaInputs[i + 1].select();
-						}
+        function handleDragLeave(e) {
+            e.preventDefault();
+            if (!previewContainer.contains(e.relatedTarget)) {
+                uploadPlaceholder.classList.remove('drag-over');
+            }
+        }
 
-						if (!/^[A-Za-z0-9]$/.test(e.key) &&
-							!['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
-							e.preventDefault();
-						}
-					});
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
 
-				input.addEventListener('focus',
-					function() {
-						this.select();
-					});
+            uploadPlaceholder.classList.remove('drag-over');
 
-				container.appendChild(input);
-				captchaInputs.push(input);
-			}
-		}
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                imageInput.files = files;
+                handleImageUpload();
+            }
+        }
 
-		// Проверка заполнения всех полей капчи
-		function checkCaptchaCompletion() {
-			let completed = true;
-			for (let i = 0; i < captchaInputs.length; i++) {
-				if (!captchaInputs[i].value) {
-					completed = false;
-					break;
-				}
-			}
-			return completed;
-		}
+        function updateAspectRatio() {
+            previewContainer.style.aspectRatio = `${gridCount} / 1`;
+        }
 
-		// Получение значения капчи из всех полей
-		function getCaptchaValue() {
-			let value = '';
-			for (let i = 0; i < captchaInputs.length; i++) {
-				value += captchaInputs[i].value.toUpperCase();
-			}
-			return value;
-		}
+        function updateGridOptions() {
+            gridOptions.forEach(option => {
+                const value = parseInt(option.dataset.value);
+                option.classList.toggle('active', value === gridCount);
+            });
+        }
 
-		// Очистка всех полей капчи
-		function clearCaptchaInputs() {
-			for (let i = 0; i < captchaInputs.length; i++) {
-				captchaInputs[i].value = '';
-			}
-			captchaInputs[0].focus();
-		}
+        function setImageSizeMode(mode) {
+            imageSizeMode = mode;
 
-		// Инициализация капчи
-		function initCaptcha() {
-			canvas = document.getElementById('captchaCanvas');
-			ctx = canvas.getContext('2d');
+            sizeOptions.forEach(option => {
+                option.classList.toggle('active', option.dataset.mode === mode);
+            });
 
-			const dpr = window.devicePixelRatio || 1;
-			canvas.width = CAPTCHA_CONFIG.width * dpr;
-			canvas.height = CAPTCHA_CONFIG.height * dpr;
-			ctx.scale(dpr, dpr);
+            if (originalImage) {
+                updatePreviewImageStyle();
+                updateImageDisplay();
+                if (isGridVisible) drawGrid();
+            }
+        }
 
-			createCaptchaInputs();
-			generateCaptcha();
+        function setBackgroundColor(color) {
+            backgroundColor = color;
 
-			document.getElementById('refreshCaptcha').addEventListener('click', () => {
-				generateCaptcha();
-				clearCaptchaInputs();
-			});
-		}
+            backgroundOptions.forEach(option => {
+                option.classList.toggle('active', option.dataset.bg === color);
+            });
 
-		// Усложненная генерация капчи
-		function generateCaptcha() {
-			const width = CAPTCHA_CONFIG.width;
-			const height = CAPTCHA_CONFIG.height;
+            if (color === 'custom') {
+                customColorPicker.style.display = 'flex';
+            } else {
+                customColorPicker.style.display = 'none';
+            }
 
-			ctx.clearRect(0, 0, width, height);
+            if (originalImage) {
+                updatePreviewBackground();
+                updateImageDisplay();
+                if (isGridVisible) drawGrid();
+            }
+        }
 
-			// Градиентный фон
-			const gradient = ctx.createLinearGradient(0, 0, width, height);
-			gradient.addColorStop(0, '#1a1a1a');
-			gradient.addColorStop(1, '#2a2a2a');
-			ctx.fillStyle = gradient;
-			ctx.fillRect(0, 0, width, height);
+        async function handleImageUpload() {
+            const file = imageInput.files[0];
+            if (!file) return;
 
-			// Генерация текста
-			currentCaptcha = '';
-			for (let i = 0; i < CAPTCHA_CONFIG.length; i++) {
-				currentCaptcha += CAPTCHA_CONFIG.characters.charAt(
-					Math.floor(Math.random() * CAPTCHA_CONFIG.characters.length)
-				);
-			}
+            if (!file.type.startsWith('image/')) {
+                showNotification('Выберите файл изображения', 'error');
+                return;
+            }
 
-			// Усложненный шум (точки)
-			for (let i = 0; i < CAPTCHA_CONFIG.dots; i++) {
-				ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.15})`;
-				ctx.beginPath();
-				ctx.arc(
-					Math.random() * width,
-					Math.random() * height,
-					Math.random() * 2,
-					0, Math.PI * 2
-				);
-				ctx.fill();
-			}
+            if (file.size > 10 * 1024 * 1024) {
+                showNotification('Файл должен быть меньше 10MB', 'error');
+                return;
+            }
 
-			// Круги помех
-			for (let i = 0; i < CAPTCHA_CONFIG.circles; i++) {
-				ctx.strokeStyle = `rgba(59, 130, 246, ${Math.random() * 0.1})`;
-				ctx.lineWidth = Math.random() * 1.5;
-				ctx.beginPath();
-				ctx.arc(
-					Math.random() * width,
-					Math.random() * height,
-					10 + Math.random() * 30,
-					0, Math.PI * 2
-				);
-				ctx.stroke();
-			}
+            showLoader();
 
-			// Волнистые линии помех
-			for (let i = 0; i < CAPTCHA_CONFIG.lines; i++) {
-				ctx.beginPath();
-				const startY = Math.random() * height;
-				for (let x = 0; x < width; x += 5) {
-					const y = startY + Math.sin(x * 0.05 + i) * 15;
-					if (x === 0) {
-						ctx.moveTo(x, y);
-					} else {
-						ctx.lineTo(x, y);
-					}
-				}
-				ctx.strokeStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.1)`;
-				ctx.lineWidth = Math.random() * 1.5;
-				ctx.stroke();
-			}
+            try {
+                const imageData = await readFileAsDataURL(file);
+                originalImage = new Image();
 
-			// Отображение символов с искажениями
-			const charWidth = width / (CAPTCHA_CONFIG.length + 1);
+                originalImage.onload = () => {
+                    previewImage.src = imageData;
+                    previewImage.style.display = 'block';
+                    uploadPlaceholder.style.display = 'none';
+                    splitAndDownloadBtn.disabled = false;
 
-			for (let i = 0; i < currentCaptcha.length; i++) {
-				const fontSize = 30 + Math.random() * 12;
-				const fontFamily = CAPTCHA_CONFIG.fonts[Math.floor(Math.random() * CAPTCHA_CONFIG.fonts.length)];
-				const color = CAPTCHA_CONFIG.colors[Math.floor(Math.random() * CAPTCHA_CONFIG.colors.length)];
+                    updatePreviewImageStyle();
+                    updatePreviewBackground();
+                    updateImageDisplay();
 
-				// Случайное искажение
-				const rotation = (Math.random() - 0.5) * 0.4;
-				const skewX = (Math.random() - 0.5) * 0.3;
-				const skewY = (Math.random() - 0.5) * 0.3;
+                    if (isGridVisible) drawGrid();
 
-				const x = charWidth * (i + 0.8) + (Math.random() - 0.5) * 10;
-				const y = height / 2 + (Math.random() - 0.5) * 15;
+                    hideLoader();
+                    showNotification('Изображение загружено');
+                };
 
-				ctx.save();
-				ctx.translate(x, y);
-				ctx.rotate(rotation);
-				ctx.transform(1, skewY, skewX, 1, 0, 0);
+                originalImage.onerror = () => {
+                    hideLoader();
+                    showNotification('Ошибка загрузки изображения', 'error');
+                };
 
-				// Тень для символа
-				ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-				ctx.shadowBlur = 3;
-				ctx.shadowOffsetX = 2;
-				ctx.shadowOffsetY = 2;
+                originalImage.src = imageData;
+            } catch (error) {
+                hideLoader();
+                showNotification('Ошибка чтения файла', 'error');
+            }
+        }
 
-				ctx.font = `${Math.random() > 0.5 ? 'bold ': ''}${fontSize}px ${fontFamily}`;
-				ctx.fillStyle = color;
-				ctx.textAlign = 'center';
-				ctx.textBaseline = 'middle';
-				ctx.fillText(currentCaptcha[i], 0, 0);
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
 
-				// Контур символа
-				ctx.shadowColor = 'transparent';
-				ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
-				ctx.lineWidth = 1;
-				ctx.strokeText(currentCaptcha[i], 0, 0);
+        function updatePreviewImageStyle() {
+            if (!originalImage) return;
 
-				ctx.restore();
-			}
-		}
+            switch (imageSizeMode) {
+                case 'fit':
+                    previewImage.style.objectFit = 'contain';
+                    break;
+                case 'fill':
+                    previewImage.style.objectFit = 'cover';
+                    break;
+                case 'stretch':
+                    previewImage.style.objectFit = 'fill';
+                    break;
+            }
+        }
 
-		// Обработка ввода никнейма
-		const nicknameInput = document.getElementById('nickname');
+        function updatePreviewBackground() {
+            const bgColor = getBackgroundColor(true);
+            previewContainer.style.backgroundColor = bgColor || 'transparent';
+        }
 
-		nicknameInput.addEventListener('input', function () {
-			let value = this.value;
-			value = value.replace(/[^A-Za-z_]/g, '');
-			const parts = value.split('_');
-			if (parts.length > 2) {
-				value = parts[0] + '_' + parts[1];
-			}
+        function getBackgroundColor(forPreview = false) {
+            switch (backgroundColor) {
+                case 'transparent': return forPreview ? 'transparent' : null;
+                case 'white': return '#ffffff';
+                case 'black': return '#000000';
+                case 'custom': return customColor;
+                default: return null;
+            }
+        }
 
-			const hasUnderscore = value.includes('_');
-			const underscoreIndex = value.indexOf('_');
+        function updateImageDisplay() {
+            if (!originalImage) return;
 
-			if (hasUnderscore) {
-				if (underscoreIndex < 2) {
-					value = value.replace('_', '');
-				} else {
-					const [firstName,
-						lastName] = value.split('_');
-					let formatted = '';
-					if (firstName) {
-						formatted = firstName.charAt(0).toUpperCase() +
-						(firstName.length > 1 ? firstName.slice(1).toLowerCase(): '');
-					}
-					if (lastName !== undefined) {
-						formatted += '_';
-						if (lastName) {
-							formatted += lastName.charAt(0).toUpperCase() +
-							(lastName.length > 1 ? lastName.slice(1).toLowerCase(): '');
-						}
-					}
-					value = formatted;
-				}
-			} else {
-				if (value.length > 0) {
-					value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-				}
-			}
-			this.value = value;
-		});
+            const width = previewContainer.clientWidth;
+            const height = previewContainer.clientHeight;
 
-		// Валидация формы
-		function validateForm() {
-			const nickname = document.getElementById('nickname').value.trim();
-			const account = document.getElementById('account').value.trim();
+            gridOverlay.width = width;
+            gridOverlay.height = height;
 
-			if (!nickname) {
-				alert('❌ Введите никнейм');
-				return false;
-			}
+            if (isGridVisible) drawGrid();
+        }
 
-			const hasUnderscore = nickname.includes('_');
-			if (hasUnderscore) {
-				if (!/^[A-Z][a-z]+_[A-Z][a-z]+$/.test(nickname)) {
-					alert('❌ Неверный формат никнейма с фамилией!\nПример: Ivan_Ivanov\n• Первая буква имени заглавная\n• Минимум 2 буквы перед подчеркиванием\n• Первая буква фамилии заглавная\n• Подчеркивание только одно');
-					return false;
-				}
-			} else {
-				if (!/^[A-Z][a-z]*$/.test(nickname)) {
-					alert('❌ Неверный формат никнейма!\nПервая буква должна быть заглавной, остальные строчные');
-					return false;
-				}
-			}
+        function handleResize() {
+            if (originalImage) {
+                updateImageDisplay();
+                if (isGridVisible) drawGrid();
+            }
+        }
 
-			if (!/^[1-9][0-9]{0,6}$/.test(account)) {
-				alert('❌ Номер счета: 1-7 цифр, первая не 0');
-				return false;
-			}
+        function drawGrid() {
+            if (!originalImage) return;
 
-			const captcha = getCaptchaValue();
-			if (captcha !== currentCaptcha.toUpperCase()) {
-				alert('❌ Неверная капча!');
-				generateCaptcha();
-				clearCaptchaInputs();
-				return false;
-			}
+            const ctx = gridOverlay.getContext('2d');
+            const width = gridOverlay.width;
+            const height = gridOverlay.height;
 
-			return true;
-		}
+            ctx.clearRect(0, 0, width, height);
 
-		// Обработка отправки формы
-		document.getElementById('registrationForm').addEventListener('submit', async (e) => {
-			e.preventDefault();
+            const squareSize = width / gridCount;
 
-			if (!validateForm()) {
-				return;
-			}
+            // Draw grid lines
+            ctx.strokeStyle = 'rgba(59, 130, 246, 0.7)';
+            ctx.lineWidth = 2;
 
-			const submitBtn = document.getElementById('submitBtn');
-			const originalText = submitBtn.textContent;
-			submitBtn.disabled = true;
-			submitBtn.textContent = 'Отправка...';
+            // Vertical lines
+            for (let i = 1; i < gridCount; i++) {
+                const x = i * squareSize;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
 
-			try {
-				await new Promise(resolve => setTimeout(resolve, 1000));
-				const ticketNumber = Math.floor(Math.random() * 900000) + 100000;
-				window.location.href = `success.html?ticket=${ticketNumber}&giveaway=1288`;
-			} catch (error) {
-				console.error('Ошибка:', error);
-				alert('⚠️ Ошибка соединения');
-			} finally {
-				submitBtn.disabled = false;
-				submitBtn.textContent = originalText;
-			}
-		});
+            // Horizontal lines
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(width, 0);
+            ctx.stroke();
 
-		// Таймер
-		function updateTimer() {
-			const timerElement = document.getElementById('timer');
-			const endTime = new Date();
-			endTime.setHours(endTime.getHours() + 24);
+            ctx.beginPath();
+            ctx.moveTo(0, height);
+            ctx.lineTo(width, height);
+            ctx.stroke();
 
-			function update() {
-				const now = new Date();
-				const diff = endTime - now;
+            // Add numbers
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.9)';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
 
-				if (diff <= 0) {
-					timerElement.textContent = '00:00:00';
-					return;
-				}
+            for (let i = 0; i < gridCount; i++) {
+                const x = i * squareSize + squareSize / 2;
+                const y = height / 2;
+                ctx.fillText(i + 1, x, y);
+            }
+        }
 
-				const hours = Math.floor(diff / (1000 * 60 * 60));
-				const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-				const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        function toggleGridVisibility() {
+            isGridVisible = !isGridVisible;
 
-				timerElement.textContent =
-				`${hours.toString().padStart(2, '0')}:` +
-				`${minutes.toString().padStart(2, '0')}:` +
-				`${seconds.toString().padStart(2, '0')}`;
-			}
+            if (isGridVisible) {
+                gridOverlay.style.display = 'block';
+                toggleGridBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                toggleGridBtn.title = 'Скрыть сетку';
+                if (originalImage) drawGrid();
+            } else {
+                gridOverlay.style.display = 'none';
+                toggleGridBtn.innerHTML = '<i class="fas fa-eye"></i>';
+                toggleGridBtn.title = 'Показать сетку';
+            }
+        }
 
-			update();
-			setInterval(update, 1000);
-		}
+        async function splitAndDownload() {
+            if (!originalImage) {
+                showNotification('Сначала загрузите изображение', 'error');
+                return;
+            }
 
-		// Инициализация при загрузке
-		document.addEventListener('DOMContentLoaded', () => {
-			updateUserProfile();
-			console.log('Данные пользователя Telegram:', user);
-			initCaptcha();
-			updateTimer();
-		});
-	</script>
+            showLoader();
+            showNotification('Создание квадратов...');
+
+            try {
+                const squareSize = 1024;
+                const totalWidth = squareSize * gridCount;
+                const totalHeight = squareSize;
+
+                // Create main canvas
+                const mainCanvas = document.createElement('canvas');
+                mainCanvas.width = totalWidth;
+                mainCanvas.height = totalHeight;
+                const mainCtx = mainCanvas.getContext('2d');
+
+                // Fill background
+                const bgColor = getBackgroundColor();
+                if (bgColor) {
+                    mainCtx.fillStyle = bgColor;
+                    mainCtx.fillRect(0, 0, totalWidth, totalHeight);
+                }
+
+                // Calculate image dimensions
+                let drawWidth, drawHeight, drawX, drawY;
+                const imgRatio = originalImage.width / originalImage.height;
+
+                switch (imageSizeMode) {
+                    case 'fit':
+                        drawWidth = totalWidth;
+                        drawHeight = drawWidth / imgRatio;
+                        drawX = 0;
+                        drawY = (totalHeight - drawHeight) / 2;
+                        break;
+
+                    case 'fill':
+                        drawHeight = totalHeight;
+                        drawWidth = drawHeight * imgRatio;
+                        drawX = (totalWidth - drawWidth) / 2;
+                        drawY = 0;
+                        break;
+
+                    case 'stretch':
+                        drawWidth = totalWidth;
+                        drawHeight = totalHeight;
+                        drawX = 0;
+                        drawY = 0;
+                        break;
+                }
+
+                // Draw image with high quality
+                mainCtx.imageSmoothingEnabled = true;
+                mainCtx.imageSmoothingQuality = 'high';
+                mainCtx.drawImage(originalImage, drawX, drawY, drawWidth, drawHeight);
+
+                // Create zip file
+                const zip = new JSZip();
+
+                for (let i = 0; i < gridCount; i++) {
+                    const squareCanvas = document.createElement('canvas');
+                    squareCanvas.width = squareSize;
+                    squareCanvas.height = squareSize;
+                    const squareCtx = squareCanvas.getContext('2d');
+
+                    // Fill background
+                    if (bgColor) {
+                        squareCtx.fillStyle = bgColor;
+                        squareCtx.fillRect(0, 0, squareSize, squareSize);
+                    }
+
+                    // Draw square from main canvas
+                    const sourceX = i * squareSize;
+                    squareCtx.imageSmoothingEnabled = true;
+                    squareCtx.imageSmoothingQuality = 'high';
+                    squareCtx.drawImage(
+                        mainCanvas,
+                        sourceX, 0, squareSize, squareSize,
+                        0, 0, squareSize, squareSize
+                    );
+
+                    // Add to zip
+                    const blob = await canvasToBlob(squareCanvas);
+                    zip.file(`square-${i + 1}.png`, blob);
+                }
+
+                // Generate timestamp for filename
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                
+                // Generate and download zip with timestamp
+                const content = await zip.generateAsync({ type: "blob" });
+                const filename = `grid_${year}-${month}-${day}_${hours}-${minutes}-${seconds}.zip`;
+                saveAs(content, filename);
+
+                hideLoader();
+                showNotification(`Скачано ${gridCount} квадратов`);
+
+            } catch (error) {
+                console.error('Error creating squares:', error);
+                hideLoader();
+                showNotification('Ошибка создания квадратов', 'error');
+            }
+        }
+
+        function canvasToBlob(canvas) {
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => resolve(blob), 'image/png', 1.0);
+            });
+        }
+
+        function updateUI() {
+            previewImage.style.display = 'none';
+            uploadPlaceholder.style.display = 'flex';
+            splitAndDownloadBtn.disabled = true;
+            gridOverlay.style.display = 'block';
+            customColorPicker.style.display = 'none';
+        }
+
+        function showNotification(message, type = 'success') {
+            notificationText.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add(type);
+            notification.classList.add('show');
+
+            const icon = notification.querySelector('i');
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle';
+            } else {
+                icon.className = 'fas fa-exclamation-circle';
+            }
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function showLoader() {
+            loader.classList.add('active');
+        }
+
+        function hideLoader() {
+            loader.classList.remove('active');
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 
 </html>
