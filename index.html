@@ -117,6 +117,11 @@
 			position: relative;
 			border: 2px dashed var(--border);
 			cursor: pointer;
+			transition: border-color 0.3s;
+		}
+
+		.image-upload.has-image {
+			border: 2px solid var(--primary);
 		}
 
 		#previewImage {
@@ -275,11 +280,9 @@
 			transition: all 0.2s;
 			border: 1px solid var(--border);
 		}
-
 		.background-option:hover, .size-option:hover, .grid-option:hover {
 			background: var(--primary-light);
 		}
-
 		.background-option.active, .size-option.active, .grid-option.active {
 			border-color: var(--primary);
 			background: var(--primary-light);
@@ -436,15 +439,12 @@
 			opacity: 1;
 			transform: translateX(-50%) translateY(0);
 		}
-
 		.notification.success {
 			border-left: 4px solid var(--success);
 		}
-
 		.notification.error {
 			border-left: 4px solid var(--error);
 		}
-
 		.loader {
 			position: fixed;
 			top: 0;
@@ -457,11 +457,9 @@
 			align-items: center;
 			justify-content: center;
 		}
-
 		.loader.active {
 			display: flex;
 		}
-
 		.spinner {
 			width: 40px;
 			height: 40px;
@@ -470,13 +468,11 @@
 			border-radius: 50%;
 			animation: spin 1s linear infinite;
 		}
-
 		@keyframes spin {
 			to {
 				transform: rotate(360deg);
 			}
 		}
-
 		@media (max-width: 340px) {
 			.background-options,
 			.size-options {
@@ -485,17 +481,13 @@
 		}
 	</style>
 </head>
-
 <body>
 	<div class="loader" id="loader">
 		<div class="spinner"></div>
 	</div>
-
 	<div class="container">
 		<header class="header">
-			<div class="header-title">
-				Grid Splitter
-			</div>
+			<div class="header-title">Grid Splitter</div>
 			<div class="header-buttons">
 				<button class="header-btn" id="uploadBtn" title="Загрузить изображение">
 					<i class="fas fa-upload"></i>
@@ -505,99 +497,64 @@
 				</button>
 			</div>
 		</header>
-
 		<input type="file" id="imageInput" accept="image/*">
-
 		<main class="main-content">
 			<div class="image-upload" id="previewContainer">
 				<img id="previewImage" src="" alt="Предпросмотр">
 				<canvas id="gridOverlay" class="grid-overlay"></canvas>
 				<div class="upload-placeholder" id="uploadPlaceholder">
 					<i class="fas fa-image"></i>
-					<p>
-						Загрузите изображение
-					</p>
-					<div class="hint">
-						PNG, JPG, GIF (ДО 10 МБ)
-					</div>
+					<p>Загрузите изображение</p>
+					<div class="hint">PNG, JPG, GIF (ДО 10 МБ)</div>
 				</div>
 			</div>
-
 			<div class="control-section">
 				<div class="section-title">
 					<i class="fas fa-th"></i>
 					<span>Количество изображений</span>
 				</div>
-
 				<div class="grid-container">
 					<div class="grid-row">
-						<div class="grid-option active" data-value="2">
-							2
-						</div>
-						<div class="grid-option" data-value="3">
-							3
-						</div>
-						<div class="grid-option" data-value="4">
-							4
-						</div>
-						<div class="grid-option" data-value="5">
-							5
-						</div>
+						<div class="grid-option active" data-value="2">2</div>
+						<div class="grid-option" data-value="3">3</div>
+						<div class="grid-option" data-value="4">4</div>
+						<div class="grid-option" data-value="5">5</div>
 					</div>
 					<div class="grid-row">
-						<div class="grid-option" data-value="6">
-							6
-						</div>
-						<div class="grid-option" data-value="7">
-							7
-						</div>
-						<div class="grid-option" data-value="8">
-							8
-						</div>
-						<div class="grid-option" data-value="9">
-							9
-						</div>
-						<div class="grid-option" data-value="10">
-							10
-						</div>
+						<div class="grid-option" data-value="6">6</div>
+						<div class="grid-option" data-value="7">7</div>
+						<div class="grid-option" data-value="8">8</div>
+						<div class="grid-option" data-value="9">9</div>
+						<div class="grid-option" data-value="10">10</div>
 					</div>
 				</div>
 			</div>
-
 			<div class="control-section">
 				<div class="section-title">
 					<i class="fas fa-expand-alt"></i>
 					<span>Размер изображения</span>
 				</div>
-
 				<div class="size-options">
 					<div class="size-option active" data-mode="fit">
 						<div class="size-icon">
 							<i class="fas fa-arrows-alt-h"></i>
 						</div>
-						<div class="size-name">
-							По ширине
-						</div>
+						<div class="size-name">По ширине</div>
 					</div>
 					<div class="size-option" data-mode="fill">
 						<div class="size-icon">
 							<i class="fas fa-arrows-alt-v"></i>
 						</div>
-						<div class="size-name">
-							По высоте
-						</div>
+						<div class="size-name">По высоте</div>
 					</div>
 					<div class="size-option" data-mode="stretch">
 						<div class="size-icon">
 							<i class="fas fa-expand-arrows-alt"></i>
 						</div>
-						<div class="size-name">
-							Растянуть
-						</div>
+						<div class="size-name">Растянуть</div>
 					</div>
 				</div>
 			</div>
-
 			<div class="control-section">
 				<div class="section-title">
 					<i class="fas fa-palette"></i>
@@ -609,29 +566,22 @@
 						</button>
 					</div>
 				</div>
-
 				<div class="background-options">
 					<div class="background-option active" data-bg="transparent">
 						<div class="bg-icon transparent"></div>
-						<div class="bg-name">
-							Прозрачный
-						</div>
+						<div class="bg-name">Прозрачный</div>
 					</div>
 					<div class="background-option" data-bg="custom">
 						<div class="bg-icon custom">
 							<i class="fas fa-palette"
 								style="color: white; line-height: 24px;"></i>
 						</div>
-						<div class="bg-name">
-							Свой цвет
-						</div>
+						<div class="bg-name">Свой цвет</div>
 					</div>
 				</div>
-
 				<input type="color" id="backgroundColorPicker" class="hidden-color-input" value="#3b82f6">
 			</div>
 		</main>
-
 		<div class="download-section">
 			<button class="download-btn" id="splitAndDownloadBtn" disabled>
 				<i class="fas fa-download"></i>
@@ -639,15 +589,12 @@
 			</button>
 		</div>
 	</div>
-
 	<div class="notification" id="notification">
 		<i class="fas fa-check-circle"></i>
 		<span id="notificationText"></span>
 	</div>
-
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-
 	<script>
 		const imageInput = document.getElementById('imageInput');
 		const uploadBtn = document.getElementById('uploadBtn');
@@ -667,30 +614,25 @@
 		const colorPreview = document.getElementById('colorPreview');
 		const colorPickerBtn = document.getElementById('colorPickerBtn');
 		const backgroundColorPicker = document.getElementById('backgroundColorPicker');
-
 		let originalImage = null;
 		let gridCount = 2;
 		let isGridVisible = true;
 		let imageSizeMode = 'fit';
 		let backgroundColor = 'transparent';
 		let customColor = '#3b82f6';
-
 		function init() {
 			setupEventListeners();
 			updateAspectRatio();
 			updateColorPreview();
 			updateUI();
 		}
-
 		function setupEventListeners() {
 			uploadBtn.addEventListener('click', () => imageInput.click());
 			previewContainer.addEventListener('click', () => imageInput.click());
 			previewContainer.addEventListener('dragover', handleDragOver);
 			previewContainer.addEventListener('dragleave', handleDragLeave);
 			previewContainer.addEventListener('drop', handleDrop);
-
 			imageInput.addEventListener('change', handleImageUpload);
-
 			gridOptions.forEach(option => {
 				option.addEventListener('click', () => {
 					gridCount = parseInt(option.dataset.value);
@@ -703,24 +645,20 @@
 					}
 				});
 			});
-
 			sizeOptions.forEach(option => {
 				option.addEventListener('click',
 					() => {
 						setImageSizeMode(option.dataset.mode);
 					});
 			});
-
 			backgroundOptions.forEach(option => {
 				option.addEventListener('click',
 					() => {
 						setBackgroundColor(option.dataset.bg);
 					});
 			});
-
 			colorPreview.addEventListener('click', () => backgroundColorPicker.click());
 			colorPickerBtn.addEventListener('click', () => backgroundColorPicker.click());
-
 			backgroundColorPicker.addEventListener('input', (e) => {
 				customColor = e.target.value;
 				updateColorPreview();
@@ -730,62 +668,50 @@
 					if (originalImage && isGridVisible) drawGrid();
 				}
 			});
-
 			toggleGridBtn.addEventListener('click',
 				toggleGridVisibility);
 			splitAndDownloadBtn.addEventListener('click',
 				splitAndDownload);
-
 			window.addEventListener('resize',
 				handleResize);
-
 			document.addEventListener('dragover',
 				(e) => e.preventDefault());
 			document.addEventListener('drop',
 				(e) => e.preventDefault());
 		}
-
 		function updateColorPreview() {
 			colorPreview.style.setProperty('--current-color',
 				customColor);
 		}
-
 		function handleDragOver(e) {
 			e.preventDefault();
 			uploadPlaceholder.classList.add('drag-over');
 		}
-
 		function handleDragLeave(e) {
 			e.preventDefault();
 			if (!previewContainer.contains(e.relatedTarget)) {
 				uploadPlaceholder.classList.remove('drag-over');
 			}
 		}
-
 		function handleDrop(e) {
 			e.preventDefault();
 			e.stopPropagation();
-
 			uploadPlaceholder.classList.remove('drag-over');
-
 			const files = e.dataTransfer.files;
 			if (files.length > 0 && files[0].type.startsWith('image/')) {
 				imageInput.files = files;
 				handleImageUpload();
 			}
 		}
-
 		function updateAspectRatio() {
 			previewContainer.style.aspectRatio = `${gridCount} / 1`;
 		}
-
 		function updateGridOptions() {
 			gridOptions.forEach(option => {
 				const value = parseInt(option.dataset.value);
 				option.classList.toggle('active', value === gridCount);
 			});
 		}
-
 		function setImageSizeMode(mode) {
 			imageSizeMode = mode;
 
@@ -799,68 +725,54 @@
 				if (isGridVisible) drawGrid();
 			}
 		}
-
 		function setBackgroundColor(color) {
 			backgroundColor = color;
-
 			backgroundOptions.forEach(option => {
 				option.classList.toggle('active', option.dataset.bg === color);
 			});
-
 			if (color === 'custom') {
 				customColorPicker.style.display = 'flex';
 			} else {
 				customColorPicker.style.display = 'none';
 			}
-
 			if (originalImage) {
 				updatePreviewBackground();
 				updateImageDisplay();
 				if (isGridVisible) drawGrid();
 			}
 		}
-
 		async function handleImageUpload() {
 			const file = imageInput.files[0];
 			if (!file) return;
-
 			if (!file.type.startsWith('image/')) {
 				showNotification('Выберите файл изображения', 'error');
 				return;
 			}
-
 			if (file.size > 10 * 1024 * 1024) {
 				showNotification('Файл должен быть меньше 10MB', 'error');
 				return;
 			}
-
 			showLoader();
-
 			try {
 				const imageData = await readFileAsDataURL(file);
 				originalImage = new Image();
-
 				originalImage.onload = () => {
 					previewImage.src = imageData;
 					previewImage.style.display = 'block';
 					uploadPlaceholder.style.display = 'none';
 					splitAndDownloadBtn.disabled = false;
-
+					previewContainer.classList.add('has-image');
 					updatePreviewImageStyle();
 					updatePreviewBackground();
 					updateImageDisplay();
-
 					if (isGridVisible) drawGrid();
-
 					hideLoader();
 					showNotification('Изображение загружено');
 				};
-
 				originalImage.onerror = () => {
 					hideLoader();
 					showNotification('Ошибка загрузки изображения', 'error');
 				};
-
 				originalImage.src = imageData;
 			} catch (error) {
 				hideLoader();
@@ -919,28 +831,22 @@
 
 			if (isGridVisible) drawGrid();
 		}
-
 		function handleResize() {
 			if (originalImage) {
 				updateImageDisplay();
 				if (isGridVisible) drawGrid();
 			}
 		}
-
 		function drawGrid() {
 			if (!originalImage) return;
-
 			const ctx = gridOverlay.getContext('2d');
 			const width = gridOverlay.width;
 			const height = gridOverlay.height;
-
 			ctx.clearRect(0, 0, width, height);
-
 			const squareSize = width / gridCount;
-
-			ctx.strokeStyle = 'rgba(59, 130, 246, 0.7)';
+			ctx.strokeStyle = 'var(--primary)';
 			ctx.lineWidth = 2;
-
+			ctx.setLineDash([5, 5]);
 			for (let i = 1; i < gridCount; i++) {
 				const x = i * squareSize;
 				ctx.beginPath();
@@ -948,32 +854,19 @@
 				ctx.lineTo(x, height);
 				ctx.stroke();
 			}
-
-			ctx.beginPath();
-			ctx.moveTo(0, 0);
-			ctx.lineTo(width, 0);
-			ctx.stroke();
-
-			ctx.beginPath();
-			ctx.moveTo(0, height);
-			ctx.lineTo(width, height);
-			ctx.stroke();
-
-			ctx.fillStyle = 'rgba(59, 130, 246, 0.9)';
+			ctx.setLineDash([]);
+			ctx.fillStyle = 'var(--primary)';
 			ctx.font = 'bold 16px sans-serif';
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
-
 			for (let i = 0; i < gridCount; i++) {
 				const x = i * squareSize + squareSize / 2;
 				const y = height / 2;
 				ctx.fillText(i + 1, x, y);
 			}
 		}
-
 		function toggleGridVisibility() {
 			isGridVisible = !isGridVisible;
-
 			if (isGridVisible) {
 				gridOverlay.style.display = 'block';
 				toggleGridBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
@@ -985,38 +878,31 @@
 				toggleGridBtn.title = 'Показать сетку';
 			}
 		}
-
 		async function splitAndDownload() {
 			if (!originalImage) {
 				showNotification('Сначала загрузите изображение', 'error');
 				return;
 			}
-
 			showLoader();
 			showNotification('Создание квадратов...');
-
 			try {
 				const squareSize = 1024;
 				const totalWidth = squareSize * gridCount;
 				const totalHeight = squareSize;
-
 				const mainCanvas = document.createElement('canvas');
 				mainCanvas.width = totalWidth;
 				mainCanvas.height = totalHeight;
 				const mainCtx = mainCanvas.getContext('2d');
-
 				const bgColor = getBackgroundColor();
 				if (bgColor) {
 					mainCtx.fillStyle = bgColor;
 					mainCtx.fillRect(0, 0, totalWidth, totalHeight);
 				}
-
 				let drawWidth,
 				drawHeight,
 				drawX,
 				drawY;
 				const imgRatio = originalImage.width / originalImage.height;
-
 				switch (imageSizeMode) {
 				case 'fit':
 					drawWidth = totalWidth;
@@ -1024,14 +910,12 @@
 					drawX = 0;
 					drawY = (totalHeight - drawHeight) / 2;
 					break;
-
 				case 'fill':
 					drawHeight = totalHeight;
 					drawWidth = drawHeight * imgRatio;
 					drawX = (totalWidth - drawWidth) / 2;
 					drawY = 0;
 					break;
-
 				case 'stretch':
 					drawWidth = totalWidth;
 					drawHeight = totalHeight;
@@ -1039,24 +923,19 @@
 					drawY = 0;
 					break;
 				}
-
 				mainCtx.imageSmoothingEnabled = true;
 				mainCtx.imageSmoothingQuality = 'high';
 				mainCtx.drawImage(originalImage, drawX, drawY, drawWidth, drawHeight);
-
 				const zip = new JSZip();
-
 				for (let i = 0; i < gridCount; i++) {
 					const squareCanvas = document.createElement('canvas');
 					squareCanvas.width = squareSize;
 					squareCanvas.height = squareSize;
 					const squareCtx = squareCanvas.getContext('2d');
-
 					if (bgColor) {
 						squareCtx.fillStyle = bgColor;
 						squareCtx.fillRect(0, 0, squareSize, squareSize);
 					}
-
 					const sourceX = i * squareSize;
 					squareCtx.imageSmoothingEnabled = true;
 					squareCtx.imageSmoothingQuality = 'high';
@@ -1065,11 +944,9 @@
 						sourceX, 0, squareSize, squareSize,
 						0, 0, squareSize, squareSize
 					);
-
 					const blob = await canvasToBlob(squareCanvas);
 					zip.file(`square-${i + 1}.png`, blob);
 				}
-
 				const now = new Date();
 				const year = now.getFullYear();
 				const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -1077,65 +954,54 @@
 				const hours = String(now.getHours()).padStart(2, '0');
 				const minutes = String(now.getMinutes()).padStart(2, '0');
 				const seconds = String(now.getSeconds()).padStart(2, '0');
-
 				const content = await zip.generateAsync({
 					type: "blob"
 				});
 				const filename = `grid_${year}-${month}-${day}_${hours}-${minutes}-${seconds}.zip`;
 				saveAs(content, filename);
-
 				hideLoader();
 				showNotification(`Скачано ${gridCount} квадратов`);
-
 			} catch (error) {
 				console.error('Error creating squares:', error);
 				hideLoader();
 				showNotification('Ошибка создания квадратов', 'error');
 			}
 		}
-
 		function canvasToBlob(canvas) {
 			return new Promise((resolve) => {
 				canvas.toBlob((blob) => resolve(blob), 'image/png', 1.0);
 			});
 		}
-
 		function updateUI() {
 			previewImage.style.display = 'none';
 			uploadPlaceholder.style.display = 'flex';
 			splitAndDownloadBtn.disabled = true;
 			gridOverlay.style.display = 'block';
 			customColorPicker.style.display = 'none';
+			previewContainer.classList.remove('has-image');
 		}
-
 		function showNotification(message, type = 'success') {
 			notificationText.textContent = message;
 			notification.className = 'notification';
 			notification.classList.add(type);
 			notification.classList.add('show');
-
 			const icon = notification.querySelector('i');
 			if (type === 'success') {
 				icon.className = 'fas fa-check-circle';
 			} else {
 				icon.className = 'fas fa-exclamation-circle';
 			}
-
 			setTimeout(() => {
 				notification.classList.remove('show');
 			}, 3000);
 		}
-
 		function showLoader() {
 			loader.classList.add('active');
 		}
-
 		function hideLoader() {
 			loader.classList.remove('active');
 		}
-
 		document.addEventListener('DOMContentLoaded', init);
 	</script>
 </body>
-
 </html>
