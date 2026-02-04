@@ -121,7 +121,7 @@
 		}
 
 		.image-upload.has-image {
-			border: 2px solid var(--primary);
+			border-color: var(--primary);
 		}
 
 		#previewImage {
@@ -844,7 +844,7 @@
 			const height = gridOverlay.height;
 			ctx.clearRect(0, 0, width, height);
 			const squareSize = width / gridCount;
-			ctx.strokeStyle = 'var(--primary)';
+			ctx.strokeStyle = '#4B67FE';
 			ctx.lineWidth = 2;
 			ctx.setLineDash([5, 5]);
 			for (let i = 1; i < gridCount; i++) {
@@ -855,7 +855,7 @@
 				ctx.stroke();
 			}
 			ctx.setLineDash([]);
-			ctx.fillStyle = 'var(--primary)';
+			ctx.fillStyle = '#4B67FE';
 			ctx.font = 'bold 16px sans-serif';
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
